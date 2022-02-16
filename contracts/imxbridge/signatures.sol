@@ -1,5 +1,7 @@
 pragma solidity ^0.8.4;
 
+import "hardhat/console.sol"; // TODO: Remove only for debug
+
 contract Signatures {
 
     function getMessageHash(
@@ -7,7 +9,7 @@ contract Signatures {
         address _tokenAddress,
         uint _tokenID,
         uint _nonce
-    ) public pure returns (bytes32) {
+    ) public view returns (bytes32) {
         return keccak256(abi.encodePacked(_to, _tokenAddress, _tokenID, _nonce));
     }
 
@@ -22,7 +24,6 @@ contract Signatures {
             );
     }
 
-
     function verify(
         address _signer,
         address _to,
@@ -30,7 +31,9 @@ contract Signatures {
         uint _tokenID,
         uint _nonce,
         bytes memory signature
-    ) public pure returns (bool) {
+    ) public view returns (bool) {
+
+
         bytes32 messageHash = getMessageHash(_to, _tokenAddress, _tokenID, _nonce);
         bytes32 ethSignedMessageHash = getEthSignedMessageHash(messageHash);
 

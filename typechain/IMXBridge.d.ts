@@ -27,14 +27,15 @@ interface IMXBridgeInterface extends ethers.utils.Interface {
     "getEthSignedMessageHash(bytes32)": FunctionFragment;
     "getMessageHash(address,address,uint256,uint256)": FunctionFragment;
     "getNonce(address)": FunctionFragment;
+    "getSignerAddress()": FunctionFragment;
     "nonces(address)": FunctionFragment;
     "owner()": FunctionFragment;
     "recoverSigner(bytes32,bytes)": FunctionFragment;
     "registeredContracts(address)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
     "setFee(uint256)": FunctionFragment;
-    "setSignerPublicKey(address)": FunctionFragment;
-    "signer()": FunctionFragment;
+    "setSignerAddress(address)": FunctionFragment;
+    "signerAddress()": FunctionFragment;
     "splitSignature(bytes)": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
     "verify(address,address,address,uint256,uint256,bytes)": FunctionFragment;
@@ -52,6 +53,10 @@ interface IMXBridgeInterface extends ethers.utils.Interface {
     values: [string, string, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "getNonce", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "getSignerAddress",
+    values?: undefined
+  ): string;
   encodeFunctionData(functionFragment: "nonces", values: [string]): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
@@ -71,10 +76,13 @@ interface IMXBridgeInterface extends ethers.utils.Interface {
     values: [BigNumberish]
   ): string;
   encodeFunctionData(
-    functionFragment: "setSignerPublicKey",
+    functionFragment: "setSignerAddress",
     values: [string]
   ): string;
-  encodeFunctionData(functionFragment: "signer", values?: undefined): string;
+  encodeFunctionData(
+    functionFragment: "signerAddress",
+    values?: undefined
+  ): string;
   encodeFunctionData(
     functionFragment: "splitSignature",
     values: [BytesLike]
@@ -103,6 +111,10 @@ interface IMXBridgeInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "getNonce", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "getSignerAddress",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "nonces", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
@@ -119,10 +131,13 @@ interface IMXBridgeInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(functionFragment: "setFee", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "setSignerPublicKey",
+    functionFragment: "setSignerAddress",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "signer", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "signerAddress",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(
     functionFragment: "splitSignature",
     data: BytesLike
@@ -211,6 +226,8 @@ export class IMXBridge extends BaseContract {
 
     getNonce(_address: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
+    getSignerAddress(overrides?: CallOverrides): Promise<[string]>;
+
     nonces(arg0: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
     owner(overrides?: CallOverrides): Promise<[string]>;
@@ -235,12 +252,12 @@ export class IMXBridge extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    setSignerPublicKey(
-      _publicKey: string,
+    setSignerAddress(
+      _signerAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    signer(overrides?: CallOverrides): Promise<[string]>;
+    signerAddress(overrides?: CallOverrides): Promise<[string]>;
 
     splitSignature(
       sig: BytesLike,
@@ -290,6 +307,8 @@ export class IMXBridge extends BaseContract {
 
   getNonce(_address: string, overrides?: CallOverrides): Promise<BigNumber>;
 
+  getSignerAddress(overrides?: CallOverrides): Promise<string>;
+
   nonces(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   owner(overrides?: CallOverrides): Promise<string>;
@@ -311,10 +330,12 @@ export class IMXBridge extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  setSignerPublicKey(
-    _publicKey: string,
+  setSignerAddress(
+    _signerAddress: string,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
+
+  signerAddress(overrides?: CallOverrides): Promise<string>;
 
   splitSignature(
     sig: BytesLike,
@@ -364,6 +385,8 @@ export class IMXBridge extends BaseContract {
 
     getNonce(_address: string, overrides?: CallOverrides): Promise<BigNumber>;
 
+    getSignerAddress(overrides?: CallOverrides): Promise<string>;
+
     nonces(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<string>;
@@ -383,12 +406,12 @@ export class IMXBridge extends BaseContract {
 
     setFee(_fee: BigNumberish, overrides?: CallOverrides): Promise<void>;
 
-    setSignerPublicKey(
-      _publicKey: string,
+    setSignerAddress(
+      _signerAddress: string,
       overrides?: CallOverrides
     ): Promise<void>;
 
-    signer(overrides?: CallOverrides): Promise<string>;
+    signerAddress(overrides?: CallOverrides): Promise<string>;
 
     splitSignature(
       sig: BytesLike,
@@ -457,6 +480,8 @@ export class IMXBridge extends BaseContract {
 
     getNonce(_address: string, overrides?: CallOverrides): Promise<BigNumber>;
 
+    getSignerAddress(overrides?: CallOverrides): Promise<BigNumber>;
+
     nonces(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
@@ -481,12 +506,12 @@ export class IMXBridge extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    setSignerPublicKey(
-      _publicKey: string,
+    setSignerAddress(
+      _signerAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    signer(overrides?: CallOverrides): Promise<BigNumber>;
+    signerAddress(overrides?: CallOverrides): Promise<BigNumber>;
 
     splitSignature(
       sig: BytesLike,
@@ -540,6 +565,8 @@ export class IMXBridge extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
+    getSignerAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
     nonces(
       arg0: string,
       overrides?: CallOverrides
@@ -567,12 +594,12 @@ export class IMXBridge extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    setSignerPublicKey(
-      _publicKey: string,
+    setSignerAddress(
+      _signerAddress: string,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    signer(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    signerAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     splitSignature(
       sig: BytesLike,

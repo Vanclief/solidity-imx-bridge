@@ -3,12 +3,16 @@ pragma solidity ^0.8.4;
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./signatures.sol";
+import "hardhat/console.sol"; // TODO: Remove only for debug
 
+
+/// @author Franco Valencia
+/// @title A Bridge contract 
 contract IMXBridge is Ownable, Signatures {
 
     uint public fee;
     uint public chainID;
-    address public signer;
+    address public signerAddress;
 
     mapping (address => uint) public nonces;
     mapping (address => address) public registeredContracts;
@@ -17,8 +21,14 @@ contract IMXBridge is Ownable, Signatures {
         chainID = _chainID;
     }
 
-    function setSignerPublicKey(address _publicKey) external onlyOwner {
-        signer = _publicKey;
+    function getSignerAddress() public view returns (address) {
+        return signerAddress;
+    }
+
+    /// @dev The bridge must be able to update the signer address 
+    /// in case the signer private key is compromised.
+    function setSignerAddress(address _signerAddress) external onlyOwner {
+        signerAddress = _signerAddress;
     }
 
     function setFee(uint _fee) external onlyOwner {
@@ -31,14 +41,12 @@ contract IMXBridge is Ownable, Signatures {
 
     function withdrawNFT(address _to, address _tokenAddress, uint _tokenId, bytes memory _signature) external payable {
 
-        // Verify the user paid the fee
         require(msg.value >= fee, "Tx value lower than fee");
-
 
         /// Verify the signature
         uint _nonce = getNonce(msg.sender);
 
-        bool valid = verify(signer, _to, _tokenAddress, _tokenId, _nonce, _signature);
+        bool valid = verify(signerAddress, _to, _tokenAddress, _tokenId, _nonce, _signature);
         require(valid, "Invalid signature");
 
         // If its valid send the NFT and increment the nonce

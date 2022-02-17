@@ -15,6 +15,9 @@ contract IMXBridge is Ownable, SignatureChecker {
 
     using SafeMath for uint256;
 
+    event ERC720Bridged(address to, uint256 amount);
+    event ERC721Bridged(address to, uint256 id);
+
     uint public fee;
     uint public chainID;
     address public signerAddress;
@@ -48,37 +51,36 @@ contract IMXBridge is Ownable, SignatureChecker {
         return nonces[_address];
     }
 
+    /// @dev Modifier for checking that the transaction paid the required
+    /// fee
     modifier paysFee() {
         require(msg.value >= fee, "Tx value lower than fee");
         _;
     }
 
-    function withdrawNFT(address _to, address _tokenAddress, uint _tokenId, bytes memory _signature) external payable paysFee(){
+    function withdrawERC20() external payable paysFee() {
 
-        // Validate the signature
+    }
+
+    function withdrawERC721(address _to, address _tokenAddress, uint _tokenId, bytes memory _signature) external payable paysFee(){
+
         uint _nonce = getNonce(msg.sender);
-        bool valid = verify(signerAddress, _to, _tokenAddress, _tokenId, _nonce, _signature);
+        bool valid = _verifyERC721Withdrawal(signerAddress, _to, _tokenAddress, _tokenId, _nonce, _signature);
         require(valid, "Invalid signature");
 
-        // Transfer the asset
         IERC721 _erc721 = IERC721(_tokenAddress); 
 
         // Check if the NFT is on the vault
         try _erc721.ownerOf(_tokenId) returns (address _owner) {
-            console.log("owner", _owner);
-            require(_owner == address(this));
+            require(_owner == address(this), "ERC721 is not on the vault");
+            _erc721.safeTransferFrom(address(this), _to, _tokenId);
         } catch {
-            console.log("Catch");
             IERC721Bridgeable _erc721Bridgeable = IERC721Bridgeable(_tokenAddress);
             _erc721Bridgeable.mintFor(_to, _tokenId);
         }
-        // _nftContract.bridgeMint(_to, _tokenID);
 
+        emit ERC721Bridged(_to, _tokenId);
         nonces[_to] = nonces[_to].add(1);
-
     }
-
-
-
 
 }

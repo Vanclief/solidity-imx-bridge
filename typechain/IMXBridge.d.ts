@@ -26,7 +26,6 @@ interface IMXBridgeInterface extends ethers.utils.Interface {
     "fee()": FunctionFragment;
     "getNonce(address)": FunctionFragment;
     "getSignerAddress()": FunctionFragment;
-    "getWithdrawMessageHash(address,address,uint256,uint256)": FunctionFragment;
     "nonces(address)": FunctionFragment;
     "owner()": FunctionFragment;
     "registeredContracts(address)": FunctionFragment;
@@ -35,8 +34,8 @@ interface IMXBridgeInterface extends ethers.utils.Interface {
     "setSignerAddress(address)": FunctionFragment;
     "signerAddress()": FunctionFragment;
     "transferOwnership(address)": FunctionFragment;
-    "verify(address,address,address,uint256,uint256,bytes)": FunctionFragment;
-    "withdrawNFT(address,address,uint256,bytes)": FunctionFragment;
+    "withdrawERC20()": FunctionFragment;
+    "withdrawERC721(address,address,uint256,bytes)": FunctionFragment;
   };
 
   encodeFunctionData(functionFragment: "chainID", values?: undefined): string;
@@ -45,10 +44,6 @@ interface IMXBridgeInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "getSignerAddress",
     values?: undefined
-  ): string;
-  encodeFunctionData(
-    functionFragment: "getWithdrawMessageHash",
-    values: [string, string, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "nonces", values: [string]): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
@@ -77,11 +72,11 @@ interface IMXBridgeInterface extends ethers.utils.Interface {
     values: [string]
   ): string;
   encodeFunctionData(
-    functionFragment: "verify",
-    values: [string, string, string, BigNumberish, BigNumberish, BytesLike]
+    functionFragment: "withdrawERC20",
+    values?: undefined
   ): string;
   encodeFunctionData(
-    functionFragment: "withdrawNFT",
+    functionFragment: "withdrawERC721",
     values: [string, string, BigNumberish, BytesLike]
   ): string;
 
@@ -90,10 +85,6 @@ interface IMXBridgeInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "getNonce", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getSignerAddress",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "getWithdrawMessageHash",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "nonces", data: BytesLike): Result;
@@ -119,18 +110,33 @@ interface IMXBridgeInterface extends ethers.utils.Interface {
     functionFragment: "transferOwnership",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(functionFragment: "verify", data: BytesLike): Result;
   decodeFunctionResult(
-    functionFragment: "withdrawNFT",
+    functionFragment: "withdrawERC20",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawERC721",
     data: BytesLike
   ): Result;
 
   events: {
+    "ERC720Bridged(address,uint256)": EventFragment;
+    "ERC721Bridged(address,uint256)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
   };
 
+  getEvent(nameOrSignatureOrTopic: "ERC720Bridged"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "ERC721Bridged"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
 }
+
+export type ERC720BridgedEvent = TypedEvent<
+  [string, BigNumber] & { to: string; amount: BigNumber }
+>;
+
+export type ERC721BridgedEvent = TypedEvent<
+  [string, BigNumber] & { to: string; id: BigNumber }
+>;
 
 export type OwnershipTransferredEvent = TypedEvent<
   [string, string] & { previousOwner: string; newOwner: string }
@@ -188,14 +194,6 @@ export class IMXBridge extends BaseContract {
 
     getSignerAddress(overrides?: CallOverrides): Promise<[string]>;
 
-    getWithdrawMessageHash(
-      _to: string,
-      _tokenAddress: string,
-      _tokenID: BigNumberish,
-      _nonce: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
-
     nonces(arg0: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
     owner(overrides?: CallOverrides): Promise<[string]>;
@@ -226,17 +224,11 @@ export class IMXBridge extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
-    verify(
-      _signer: string,
-      _to: string,
-      _tokenAddress: string,
-      _tokenID: BigNumberish,
-      _nonce: BigNumberish,
-      signature: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<[boolean]>;
+    withdrawERC20(
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
 
-    withdrawNFT(
+    withdrawERC721(
       _to: string,
       _tokenAddress: string,
       _tokenId: BigNumberish,
@@ -252,14 +244,6 @@ export class IMXBridge extends BaseContract {
   getNonce(_address: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   getSignerAddress(overrides?: CallOverrides): Promise<string>;
-
-  getWithdrawMessageHash(
-    _to: string,
-    _tokenAddress: string,
-    _tokenID: BigNumberish,
-    _nonce: BigNumberish,
-    overrides?: CallOverrides
-  ): Promise<string>;
 
   nonces(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -288,17 +272,11 @@ export class IMXBridge extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
-  verify(
-    _signer: string,
-    _to: string,
-    _tokenAddress: string,
-    _tokenID: BigNumberish,
-    _nonce: BigNumberish,
-    signature: BytesLike,
-    overrides?: CallOverrides
-  ): Promise<boolean>;
+  withdrawERC20(
+    overrides?: PayableOverrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
-  withdrawNFT(
+  withdrawERC721(
     _to: string,
     _tokenAddress: string,
     _tokenId: BigNumberish,
@@ -314,14 +292,6 @@ export class IMXBridge extends BaseContract {
     getNonce(_address: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     getSignerAddress(overrides?: CallOverrides): Promise<string>;
-
-    getWithdrawMessageHash(
-      _to: string,
-      _tokenAddress: string,
-      _tokenID: BigNumberish,
-      _nonce: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<string>;
 
     nonces(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -348,17 +318,9 @@ export class IMXBridge extends BaseContract {
       overrides?: CallOverrides
     ): Promise<void>;
 
-    verify(
-      _signer: string,
-      _to: string,
-      _tokenAddress: string,
-      _tokenID: BigNumberish,
-      _nonce: BigNumberish,
-      signature: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<boolean>;
+    withdrawERC20(overrides?: CallOverrides): Promise<void>;
 
-    withdrawNFT(
+    withdrawERC721(
       _to: string,
       _tokenAddress: string,
       _tokenId: BigNumberish,
@@ -368,6 +330,26 @@ export class IMXBridge extends BaseContract {
   };
 
   filters: {
+    "ERC720Bridged(address,uint256)"(
+      to?: null,
+      amount?: null
+    ): TypedEventFilter<[string, BigNumber], { to: string; amount: BigNumber }>;
+
+    ERC720Bridged(
+      to?: null,
+      amount?: null
+    ): TypedEventFilter<[string, BigNumber], { to: string; amount: BigNumber }>;
+
+    "ERC721Bridged(address,uint256)"(
+      to?: null,
+      id?: null
+    ): TypedEventFilter<[string, BigNumber], { to: string; id: BigNumber }>;
+
+    ERC721Bridged(
+      to?: null,
+      id?: null
+    ): TypedEventFilter<[string, BigNumber], { to: string; id: BigNumber }>;
+
     "OwnershipTransferred(address,address)"(
       previousOwner?: string | null,
       newOwner?: string | null
@@ -393,14 +375,6 @@ export class IMXBridge extends BaseContract {
     getNonce(_address: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     getSignerAddress(overrides?: CallOverrides): Promise<BigNumber>;
-
-    getWithdrawMessageHash(
-      _to: string,
-      _tokenAddress: string,
-      _tokenID: BigNumberish,
-      _nonce: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
 
     nonces(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -432,17 +406,11 @@ export class IMXBridge extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    verify(
-      _signer: string,
-      _to: string,
-      _tokenAddress: string,
-      _tokenID: BigNumberish,
-      _nonce: BigNumberish,
-      signature: BytesLike,
-      overrides?: CallOverrides
+    withdrawERC20(
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
-    withdrawNFT(
+    withdrawERC721(
       _to: string,
       _tokenAddress: string,
       _tokenId: BigNumberish,
@@ -462,14 +430,6 @@ export class IMXBridge extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     getSignerAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
-    getWithdrawMessageHash(
-      _to: string,
-      _tokenAddress: string,
-      _tokenID: BigNumberish,
-      _nonce: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
 
     nonces(
       arg0: string,
@@ -504,17 +464,11 @@ export class IMXBridge extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    verify(
-      _signer: string,
-      _to: string,
-      _tokenAddress: string,
-      _tokenID: BigNumberish,
-      _nonce: BigNumberish,
-      signature: BytesLike,
-      overrides?: CallOverrides
+    withdrawERC20(
+      overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
-    withdrawNFT(
+    withdrawERC721(
       _to: string,
       _tokenAddress: string,
       _tokenId: BigNumberish,

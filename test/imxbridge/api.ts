@@ -52,11 +52,11 @@ async function deployBridgeableNFT(imxBridgeAddress: string) {
 
 describe("IMXBridge", function () {
   let imxBridge: IMXBridge;
-  let nftContract: BridgeableNFT;
+  let erc721: BridgeableNFT;
 
   before(async function () {
     imxBridge = await deployBridge();
-    nftContract = await deployBridgeableNFT(imxBridge.address);
+    erc721 = await deployBridgeableNFT(imxBridge.address);
   });
 
   it("Should be able to update the signer address", async function () {
@@ -69,7 +69,7 @@ describe("IMXBridge", function () {
 
   it("Should be able to withdraw an non-minted NFT with a valid signature", async function () {
     const to = "0xc0324Dca5073Df1aaf26730471718c500d31cA01";
-    const tokenAddress = nftContract.address;
+    const tokenAddress = erc721.address;
     const tokenId = 120;
     const nonce = 0;
     const signature = await signWithdrawMessage(
@@ -79,23 +79,37 @@ describe("IMXBridge", function () {
       nonce
     );
 
-    await imxBridge.withdrawNFT(to, tokenAddress, tokenId, signature);
-  });
-
-  it("Should be able to withdraw a deposited NFT with a valid signature", async function () {
-    const to = "0xc0324Dca5073Df1aaf26730471718c500d31cA01";
-    const tokenAddress = nftContract.address;
-    const tokenId = 120;
-    const nonce = 0;
-    const signature = await signWithdrawMessage(
+    const tx = await imxBridge.withdrawERC721(
       to,
       tokenAddress,
       tokenId,
-      nonce
+      signature
     );
+    const txReceipt = await tx.wait();
 
-    await imxBridge.withdrawNFT(to, tokenAddress, tokenId, signature);
+    expect(await erc721.ownerOf(tokenId)).to.equal(to);
+    expect(await imxBridge.getNonce(to)).to.equal(nonce + 1);
+    expect(txReceipt.status).to.equal(1);
+
+    if (txReceipt.events) {
+      expect(txReceipt.events.length).to.not.equal(0);
+    }
   });
+
+  // it("Should be able to withdraw a deposited NFT with a valid signature", async function () {
+  //   const to = "0xc0324Dca5073Df1aaf26730471718c500d31cA01";
+  //   const tokenAddress = nftContract.address;
+  //   const tokenId = 120;
+  //   const nonce = 0;
+  //   const signature = await signWithdrawMessage(
+  //     to,
+  //     tokenAddress,
+  //     tokenId,
+  //     nonce
+  //   );
+
+  //   await imxBridge.withdrawNFT(to, tokenAddress, tokenId, signature);
+  // });
 
   it("Should not be able to withdraw an NFT with an invalid signature", async function () {});
 

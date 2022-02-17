@@ -25,9 +25,9 @@ interface IMXBridgeInterface extends ethers.utils.Interface {
     "chainID()": FunctionFragment;
     "fee()": FunctionFragment;
     "getEthSignedMessageHash(bytes32)": FunctionFragment;
-    "getMessageHash(address,address,uint256,uint256)": FunctionFragment;
     "getNonce(address)": FunctionFragment;
     "getSignerAddress()": FunctionFragment;
+    "getWithdrawMessageHash(address,address,uint256,uint256)": FunctionFragment;
     "nonces(address)": FunctionFragment;
     "owner()": FunctionFragment;
     "recoverSigner(bytes32,bytes)": FunctionFragment;
@@ -48,14 +48,14 @@ interface IMXBridgeInterface extends ethers.utils.Interface {
     functionFragment: "getEthSignedMessageHash",
     values: [BytesLike]
   ): string;
-  encodeFunctionData(
-    functionFragment: "getMessageHash",
-    values: [string, string, BigNumberish, BigNumberish]
-  ): string;
   encodeFunctionData(functionFragment: "getNonce", values: [string]): string;
   encodeFunctionData(
     functionFragment: "getSignerAddress",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "getWithdrawMessageHash",
+    values: [string, string, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "nonces", values: [string]): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
@@ -106,13 +106,13 @@ interface IMXBridgeInterface extends ethers.utils.Interface {
     functionFragment: "getEthSignedMessageHash",
     data: BytesLike
   ): Result;
-  decodeFunctionResult(
-    functionFragment: "getMessageHash",
-    data: BytesLike
-  ): Result;
   decodeFunctionResult(functionFragment: "getNonce", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getSignerAddress",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "getWithdrawMessageHash",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "nonces", data: BytesLike): Result;
@@ -216,17 +216,17 @@ export class IMXBridge extends BaseContract {
       overrides?: CallOverrides
     ): Promise<[string]>;
 
-    getMessageHash(
+    getNonce(_address: string, overrides?: CallOverrides): Promise<[BigNumber]>;
+
+    getSignerAddress(overrides?: CallOverrides): Promise<[string]>;
+
+    getWithdrawMessageHash(
       _to: string,
       _tokenAddress: string,
       _tokenID: BigNumberish,
       _nonce: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string]>;
-
-    getNonce(_address: string, overrides?: CallOverrides): Promise<[BigNumber]>;
-
-    getSignerAddress(overrides?: CallOverrides): Promise<[string]>;
 
     nonces(arg0: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
@@ -297,17 +297,17 @@ export class IMXBridge extends BaseContract {
     overrides?: CallOverrides
   ): Promise<string>;
 
-  getMessageHash(
+  getNonce(_address: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+  getSignerAddress(overrides?: CallOverrides): Promise<string>;
+
+  getWithdrawMessageHash(
     _to: string,
     _tokenAddress: string,
     _tokenID: BigNumberish,
     _nonce: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string>;
-
-  getNonce(_address: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-  getSignerAddress(overrides?: CallOverrides): Promise<string>;
 
   nonces(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -375,17 +375,17 @@ export class IMXBridge extends BaseContract {
       overrides?: CallOverrides
     ): Promise<string>;
 
-    getMessageHash(
+    getNonce(_address: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    getSignerAddress(overrides?: CallOverrides): Promise<string>;
+
+    getWithdrawMessageHash(
       _to: string,
       _tokenAddress: string,
       _tokenID: BigNumberish,
       _nonce: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
-
-    getNonce(_address: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    getSignerAddress(overrides?: CallOverrides): Promise<string>;
 
     nonces(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -470,17 +470,17 @@ export class IMXBridge extends BaseContract {
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
-    getMessageHash(
+    getNonce(_address: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    getSignerAddress(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getWithdrawMessageHash(
       _to: string,
       _tokenAddress: string,
       _tokenID: BigNumberish,
       _nonce: BigNumberish,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
-
-    getNonce(_address: string, overrides?: CallOverrides): Promise<BigNumber>;
-
-    getSignerAddress(overrides?: CallOverrides): Promise<BigNumber>;
 
     nonces(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -552,20 +552,20 @@ export class IMXBridge extends BaseContract {
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
-    getMessageHash(
-      _to: string,
-      _tokenAddress: string,
-      _tokenID: BigNumberish,
-      _nonce: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     getNonce(
       _address: string,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 
     getSignerAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getWithdrawMessageHash(
+      _to: string,
+      _tokenAddress: string,
+      _tokenID: BigNumberish,
+      _nonce: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     nonces(
       arg0: string,

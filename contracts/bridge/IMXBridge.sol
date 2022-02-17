@@ -1,8 +1,9 @@
 pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
+import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 
 import "./SignatureChecker.sol";
 import "./../tokens/IBridgeable.sol";
@@ -15,7 +16,7 @@ contract IMXBridge is Ownable, SignatureChecker {
 
     using SafeMath for uint256;
 
-    event ERC720Bridged(address to, uint256 amount);
+    event ERC20Bridged(address to, uint256 amount);
     event ERC721Bridged(address to, uint256 id);
 
     uint public fee; // Fees charged for bridging assets to cover offchain costs
@@ -59,8 +60,17 @@ contract IMXBridge is Ownable, SignatureChecker {
         _;
     }
 
-    function withdrawERC20() external payable paysFee() {
+    function withdrawERC20(address _to, address _tokenAddress, uint _amount, bytes memory _signature) external payable paysFee() {
 
+        uint _nonce = getNonce(msg.sender);
+        bool valid = _verifyERC20Withdrawal(signerAddress, _to, _tokenAddress, _amount, _nonce, _signature);
+        require(valid, "Invalid signature");
+
+        IERC20Bridgeable _erc20Bridgeable = IERC20Bridgeable(_tokenAddress); 
+        _erc20Bridgeable.mintFor(_to, _amount);
+
+        nonces[_to] = nonces[_to].add(1);
+        emit ERC20Bridged(_to, _amount);
     }
 
     function withdrawERC721(address _to, address _tokenAddress, uint _tokenId, bytes memory _signature) external payable paysFee(){
@@ -69,9 +79,9 @@ contract IMXBridge is Ownable, SignatureChecker {
         bool valid = _verifyERC721Withdrawal(signerAddress, _to, _tokenAddress, _tokenId, _nonce, _signature);
         require(valid, "Invalid signature");
 
+        // Check if the ERC721 is on the vault, otherwise mint it
         IERC721 _erc721 = IERC721(_tokenAddress); 
 
-        // Check if the NFT is on the vault
         try _erc721.ownerOf(_tokenId) returns (address _owner) {
             require(_owner == address(this), "ERC721 is not on the vault");
             _erc721.safeTransferFrom(address(this), _to, _tokenId);
@@ -80,8 +90,8 @@ contract IMXBridge is Ownable, SignatureChecker {
             _erc721Bridgeable.mintFor(_to, _tokenId);
         }
 
-        emit ERC721Bridged(_to, _tokenId);
         nonces[_to] = nonces[_to].add(1);
+        emit ERC721Bridged(_to, _tokenId);
     }
 
 }

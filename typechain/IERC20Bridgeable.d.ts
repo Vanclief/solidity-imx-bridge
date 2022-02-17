@@ -21,14 +21,20 @@ import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
 interface IERC20BridgeableInterface extends ethers.utils.Interface {
   functions: {
+    "burn(address,uint256)": FunctionFragment;
     "mintFor(address,uint256)": FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: "burn",
+    values: [string, BigNumberish]
+  ): string;
   encodeFunctionData(
     functionFragment: "mintFor",
     values: [string, BigNumberish]
   ): string;
 
+  decodeFunctionResult(functionFragment: "burn", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "mintFor", data: BytesLike): Result;
 
   events: {};
@@ -78,12 +84,24 @@ export class IERC20Bridgeable extends BaseContract {
   interface: IERC20BridgeableInterface;
 
   functions: {
+    burn(
+      from: string,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     mintFor(
       to: string,
       amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
+
+  burn(
+    from: string,
+    amount: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   mintFor(
     to: string,
@@ -92,6 +110,12 @@ export class IERC20Bridgeable extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    burn(
+      from: string,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     mintFor(
       to: string,
       amount: BigNumberish,
@@ -102,6 +126,12 @@ export class IERC20Bridgeable extends BaseContract {
   filters: {};
 
   estimateGas: {
+    burn(
+      from: string,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     mintFor(
       to: string,
       amount: BigNumberish,
@@ -110,6 +140,12 @@ export class IERC20Bridgeable extends BaseContract {
   };
 
   populateTransaction: {
+    burn(
+      from: string,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     mintFor(
       to: string,
       amount: BigNumberish,

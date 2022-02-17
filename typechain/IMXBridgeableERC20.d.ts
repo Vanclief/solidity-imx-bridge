@@ -21,10 +21,15 @@ import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
 interface IMXBridgeableERC20Interface extends ethers.utils.Interface {
   functions: {
+    "burn(address,uint256)": FunctionFragment;
     "imxBridgeAddress()": FunctionFragment;
     "mintFor(address,uint256)": FunctionFragment;
   };
 
+  encodeFunctionData(
+    functionFragment: "burn",
+    values: [string, BigNumberish]
+  ): string;
   encodeFunctionData(
     functionFragment: "imxBridgeAddress",
     values?: undefined
@@ -34,6 +39,7 @@ interface IMXBridgeableERC20Interface extends ethers.utils.Interface {
     values: [string, BigNumberish]
   ): string;
 
+  decodeFunctionResult(functionFragment: "burn", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "imxBridgeAddress",
     data: BytesLike
@@ -95,6 +101,12 @@ export class IMXBridgeableERC20 extends BaseContract {
   interface: IMXBridgeableERC20Interface;
 
   functions: {
+    burn(
+      from: string,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     imxBridgeAddress(overrides?: CallOverrides): Promise<[string]>;
 
     mintFor(
@@ -103,6 +115,12 @@ export class IMXBridgeableERC20 extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
   };
+
+  burn(
+    from: string,
+    amount: BigNumberish,
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
 
   imxBridgeAddress(overrides?: CallOverrides): Promise<string>;
 
@@ -113,6 +131,12 @@ export class IMXBridgeableERC20 extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
+    burn(
+      from: string,
+      amount: BigNumberish,
+      overrides?: CallOverrides
+    ): Promise<void>;
+
     imxBridgeAddress(overrides?: CallOverrides): Promise<string>;
 
     mintFor(
@@ -135,6 +159,12 @@ export class IMXBridgeableERC20 extends BaseContract {
   };
 
   estimateGas: {
+    burn(
+      from: string,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     imxBridgeAddress(overrides?: CallOverrides): Promise<BigNumber>;
 
     mintFor(
@@ -145,6 +175,12 @@ export class IMXBridgeableERC20 extends BaseContract {
   };
 
   populateTransaction: {
+    burn(
+      from: string,
+      amount: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
     imxBridgeAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     mintFor(

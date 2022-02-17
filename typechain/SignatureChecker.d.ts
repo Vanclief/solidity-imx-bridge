@@ -20,28 +20,13 @@ import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
 interface SignatureCheckerInterface extends ethers.utils.Interface {
   functions: {
-    "getEthSignedMessageHash(bytes32)": FunctionFragment;
     "getWithdrawMessageHash(address,address,uint256,uint256)": FunctionFragment;
-    "recoverSigner(bytes32,bytes)": FunctionFragment;
-    "splitSignature(bytes)": FunctionFragment;
     "verify(address,address,address,uint256,uint256,bytes)": FunctionFragment;
   };
 
   encodeFunctionData(
-    functionFragment: "getEthSignedMessageHash",
-    values: [BytesLike]
-  ): string;
-  encodeFunctionData(
     functionFragment: "getWithdrawMessageHash",
     values: [string, string, BigNumberish, BigNumberish]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "recoverSigner",
-    values: [BytesLike, BytesLike]
-  ): string;
-  encodeFunctionData(
-    functionFragment: "splitSignature",
-    values: [BytesLike]
   ): string;
   encodeFunctionData(
     functionFragment: "verify",
@@ -49,19 +34,7 @@ interface SignatureCheckerInterface extends ethers.utils.Interface {
   ): string;
 
   decodeFunctionResult(
-    functionFragment: "getEthSignedMessageHash",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
     functionFragment: "getWithdrawMessageHash",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "recoverSigner",
-    data: BytesLike
-  ): Result;
-  decodeFunctionResult(
-    functionFragment: "splitSignature",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "verify", data: BytesLike): Result;
@@ -113,11 +86,6 @@ export class SignatureChecker extends BaseContract {
   interface: SignatureCheckerInterface;
 
   functions: {
-    getEthSignedMessageHash(
-      _messageHash: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
-
     getWithdrawMessageHash(
       _to: string,
       _tokenAddress: string,
@@ -125,17 +93,6 @@ export class SignatureChecker extends BaseContract {
       _nonce: BigNumberish,
       overrides?: CallOverrides
     ): Promise<[string]>;
-
-    recoverSigner(
-      _ethSignedMessageHash: BytesLike,
-      _signature: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<[string]>;
-
-    splitSignature(
-      sig: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<[string, string, number] & { r: string; s: string; v: number }>;
 
     verify(
       _signer: string,
@@ -148,11 +105,6 @@ export class SignatureChecker extends BaseContract {
     ): Promise<[boolean]>;
   };
 
-  getEthSignedMessageHash(
-    _messageHash: BytesLike,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
   getWithdrawMessageHash(
     _to: string,
     _tokenAddress: string,
@@ -160,17 +112,6 @@ export class SignatureChecker extends BaseContract {
     _nonce: BigNumberish,
     overrides?: CallOverrides
   ): Promise<string>;
-
-  recoverSigner(
-    _ethSignedMessageHash: BytesLike,
-    _signature: BytesLike,
-    overrides?: CallOverrides
-  ): Promise<string>;
-
-  splitSignature(
-    sig: BytesLike,
-    overrides?: CallOverrides
-  ): Promise<[string, string, number] & { r: string; s: string; v: number }>;
 
   verify(
     _signer: string,
@@ -183,11 +124,6 @@ export class SignatureChecker extends BaseContract {
   ): Promise<boolean>;
 
   callStatic: {
-    getEthSignedMessageHash(
-      _messageHash: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
     getWithdrawMessageHash(
       _to: string,
       _tokenAddress: string,
@@ -195,17 +131,6 @@ export class SignatureChecker extends BaseContract {
       _nonce: BigNumberish,
       overrides?: CallOverrides
     ): Promise<string>;
-
-    recoverSigner(
-      _ethSignedMessageHash: BytesLike,
-      _signature: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<string>;
-
-    splitSignature(
-      sig: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<[string, string, number] & { r: string; s: string; v: number }>;
 
     verify(
       _signer: string,
@@ -221,27 +146,11 @@ export class SignatureChecker extends BaseContract {
   filters: {};
 
   estimateGas: {
-    getEthSignedMessageHash(
-      _messageHash: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
     getWithdrawMessageHash(
       _to: string,
       _tokenAddress: string,
       _tokenID: BigNumberish,
       _nonce: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    recoverSigner(
-      _ethSignedMessageHash: BytesLike,
-      _signature: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<BigNumber>;
-
-    splitSignature(
-      sig: BytesLike,
       overrides?: CallOverrides
     ): Promise<BigNumber>;
 
@@ -257,27 +166,11 @@ export class SignatureChecker extends BaseContract {
   };
 
   populateTransaction: {
-    getEthSignedMessageHash(
-      _messageHash: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
     getWithdrawMessageHash(
       _to: string,
       _tokenAddress: string,
       _tokenID: BigNumberish,
       _nonce: BigNumberish,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    recoverSigner(
-      _ethSignedMessageHash: BytesLike,
-      _signature: BytesLike,
-      overrides?: CallOverrides
-    ): Promise<PopulatedTransaction>;
-
-    splitSignature(
-      sig: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

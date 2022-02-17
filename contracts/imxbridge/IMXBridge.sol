@@ -50,14 +50,16 @@ contract IMXBridge is Ownable, SignatureChecker {
         require(valid, "Invalid signature");
 
         // If its valid send the NFT and increment the nonce
-        IERC721 _nftContract = IERC721(_tokenAddress); 
+        // IERC721 _nftContract = IERC721(_tokenAddress); 
 
-            // Check if the NFT is on the vault
-        try _nftContract.ownerOf(_tokenId) returns (address _owner) {
-            require(_owner == address(this));
-        } catch {
+        console.log("Ok");
 
-        }
+        //     // Check if the NFT is on the vault
+        // try _nftContract.ownerOf(_tokenId) returns (address _owner) {
+        //     require(_owner == address(this));
+        // } catch {
+
+        // }
         // _nftContract.bridgeMint(_to, _tokenID);
 
         // _nftContract.bridgeMint(_to, _tokenID);

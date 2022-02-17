@@ -5,6 +5,7 @@ pragma solidity ^0.8.4;
 /// withdrawal of IMX-minted tokens to L1
 
 interface IERC20Bridgeable {
+    function burn(address from, uint256 amount) external;
     function mintFor(address to, uint256 amount) external;
 }
 

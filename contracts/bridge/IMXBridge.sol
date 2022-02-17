@@ -16,6 +16,9 @@ contract IMXBridge is Ownable, SignatureChecker {
 
     using SafeMath for uint256;
 
+    event ERC20Deposited(address from, uint256 amount);
+    event ERC721Deposited(address from, uint256 id);
+
     event ERC20Bridged(address to, uint256 amount);
     event ERC721Bridged(address to, uint256 id);
 
@@ -60,6 +63,22 @@ contract IMXBridge is Ownable, SignatureChecker {
         _;
     }
 
+    /// @dev Deposits an ERC20 token to the Bridge and proceeds to
+    /// burn it
+    function depositERC20(address _token, uint256 _amount) external {
+        require(_amount > 0, "Deposit can't be 0");
+        IERC20(_token).transferFrom(msg.sender, address(this), _amount);
+        IERC20Bridgeable(_token).burn(address(this), _amount);
+        emit ERC20Deposited(msg.sender, _amount);
+    }
+
+    /// @dev Deposits an ERC721 token to the bridge contract 
+    function depositERC721(address _token, uint256 _id) external {
+        IERC721(_token).safeTransferFrom(msg.sender, address(this), _id);
+        emit ERC721Deposited(msg.sender, _id);
+    }
+
+    /// @dev withdraws an ERC20 token from IMX to this chain
     function withdrawERC20(address _to, address _tokenAddress, uint _amount, bytes memory _signature) external payable paysFee() {
 
         uint _nonce = getNonce(msg.sender);
@@ -73,6 +92,7 @@ contract IMXBridge is Ownable, SignatureChecker {
         emit ERC20Bridged(_to, _amount);
     }
 
+    /// @dev withdraws an ERC721 token from IMX to this chain
     function withdrawERC721(address _to, address _tokenAddress, uint _tokenId, bytes memory _signature) external payable paysFee(){
 
         uint _nonce = getNonce(msg.sender);

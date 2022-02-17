@@ -44,6 +44,10 @@ contract IMXBridge is Ownable, SignatureChecker {
         signerAddress = _signerAddress;
     }
 
+    function getFee() public view returns (uint) {
+        return fee;
+    }
+
     /// @dev Set the fee that is required from the caller to execute a 
     /// withdraw transaction
     function setFee(uint _fee) external onlyOwner {

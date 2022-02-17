@@ -51,68 +51,32 @@ async function deployBridgeableNFT(imxBridgeAddress: string) {
   return contract;
 }
 
-describe("IMXBridge", function () {
+describe("IMXBridge: Admin functions", function () {
   let imxBridge: IMXBridge;
-  let erc721: BridgeableNFT;
 
   before(async function () {
     imxBridge = await deployBridge();
-    erc721 = await deployBridgeableNFT(imxBridge.address);
   });
 
   it("Should be able to update the signer address", async function () {
-    const newAddress = "0x14791697260E4c9A71f18484C9f997B308e59325";
+    const newAddress = "0xc0324Dca5073Df1aaf26730471718c500d31cA01";
 
     await imxBridge.setSignerAddress(newAddress);
 
     expect(await imxBridge.getSignerAddress()).to.equal(newAddress);
   });
 
-  it("Should be able to withdraw an non-minted NFT with a valid signature", async function () {
-    const to = "0xc0324Dca5073Df1aaf26730471718c500d31cA01";
-    const tokenAddress = erc721.address;
-    const tokenId = 120;
-    const nonce = 0;
-    const signature = await signWithdrawMessage(
-      to,
-      tokenAddress,
-      tokenId,
-      nonce
-    );
+  it("Should be able to set the Fee", async function () {
+    const newFee = ethers.utils.parseEther("0.1");
 
-    const tx = await imxBridge.withdrawERC721(
-      to,
-      tokenAddress,
-      tokenId,
-      signature
-    );
-    const txReceipt = await tx.wait();
-
-    expect(await erc721.ownerOf(tokenId)).to.equal(to);
-    expect(await imxBridge.getNonce(to)).to.equal(nonce + 1);
-    expect(txReceipt.status).to.equal(1);
-
-    if (txReceipt.events) {
-      expect(txReceipt.events.length).to.not.equal(0);
-    }
+    await imxBridge.setFee(newFee);
+    expect(await imxBridge.getFee()).to.equal(newFee);
   });
 
-  // it("Should be able to withdraw a deposited NFT with a valid signature", async function () {
-  //   const to = "0xc0324Dca5073Df1aaf26730471718c500d31cA01";
-  //   const tokenAddress = nftContract.address;
-  //   const tokenId = 120;
-  //   const nonce = 0;
-  //   const signature = await signWithdrawMessage(
-  //     to,
-  //     tokenAddress,
-  //     tokenId,
-  //     nonce
-  //   );
+  it("Should be able to register a contract", async function () {
+    const tokenContract = "0xa4ddc0932b4e97523f8198eda7a28dac2327d365";
+    const erc721 = await deployBridgeableNFT(imxBridge.address);
 
-  //   await imxBridge.withdrawNFT(to, tokenAddress, tokenId, signature);
-  // });
-
-  it("Should not be able to withdraw an NFT with an invalid signature", async function () {});
-
-  it("Should ...", async function () {});
+    await imxBridge.registerContract(tokenContract, erc721.address);
+  });
 });

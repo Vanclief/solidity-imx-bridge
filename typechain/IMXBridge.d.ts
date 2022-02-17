@@ -26,6 +26,7 @@ interface IMXBridgeInterface extends ethers.utils.Interface {
     "depositERC20(address,uint256)": FunctionFragment;
     "depositERC721(address,uint256)": FunctionFragment;
     "fee()": FunctionFragment;
+    "getFee()": FunctionFragment;
     "getNonce(address)": FunctionFragment;
     "getSignerAddress()": FunctionFragment;
     "nonces(address)": FunctionFragment;
@@ -51,6 +52,7 @@ interface IMXBridgeInterface extends ethers.utils.Interface {
     values: [string, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "fee", values?: undefined): string;
+  encodeFunctionData(functionFragment: "getFee", values?: undefined): string;
   encodeFunctionData(functionFragment: "getNonce", values: [string]): string;
   encodeFunctionData(
     functionFragment: "getSignerAddress",
@@ -105,6 +107,7 @@ interface IMXBridgeInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "fee", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "getFee", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getNonce", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getSignerAddress",
@@ -257,6 +260,8 @@ export class IMXBridge extends BaseContract {
 
     fee(overrides?: CallOverrides): Promise<[BigNumber]>;
 
+    getFee(overrides?: CallOverrides): Promise<[BigNumber]>;
+
     getNonce(_address: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
     getSignerAddress(overrides?: CallOverrides): Promise<[string]>;
@@ -330,6 +335,8 @@ export class IMXBridge extends BaseContract {
 
   fee(overrides?: CallOverrides): Promise<BigNumber>;
 
+  getFee(overrides?: CallOverrides): Promise<BigNumber>;
+
   getNonce(_address: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   getSignerAddress(overrides?: CallOverrides): Promise<string>;
@@ -399,6 +406,8 @@ export class IMXBridge extends BaseContract {
     ): Promise<void>;
 
     fee(overrides?: CallOverrides): Promise<BigNumber>;
+
+    getFee(overrides?: CallOverrides): Promise<BigNumber>;
 
     getNonce(_address: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -559,6 +568,8 @@ export class IMXBridge extends BaseContract {
 
     fee(overrides?: CallOverrides): Promise<BigNumber>;
 
+    getFee(overrides?: CallOverrides): Promise<BigNumber>;
+
     getNonce(_address: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     getSignerAddress(overrides?: CallOverrides): Promise<BigNumber>;
@@ -632,6 +643,8 @@ export class IMXBridge extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     fee(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    getFee(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     getNonce(
       _address: string,

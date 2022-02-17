@@ -49,10 +49,6 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IMXBridge__factory>;
     getContractFactory(
-      name: "IMXBridgeHelper",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.IMXBridgeHelper__factory>;
-    getContractFactory(
       name: "BridgeableNFT",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.BridgeableNFT__factory>;
@@ -118,11 +114,6 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.IMXBridge>;
-    getContractAt(
-      name: "IMXBridgeHelper",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.IMXBridgeHelper>;
     getContractAt(
       name: "BridgeableNFT",
       address: string,

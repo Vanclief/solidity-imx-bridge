@@ -22,7 +22,7 @@ import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
 interface IMXBridgeInterface extends ethers.utils.Interface {
   functions: {
-    "chainID()": FunctionFragment;
+    "chainId()": FunctionFragment;
     "depositERC20(address,uint256)": FunctionFragment;
     "depositERC721(address,uint256)": FunctionFragment;
     "fee()": FunctionFragment;
@@ -43,7 +43,7 @@ interface IMXBridgeInterface extends ethers.utils.Interface {
     "withdrawERC721(address,address,uint256,bytes)": FunctionFragment;
   };
 
-  encodeFunctionData(functionFragment: "chainID", values?: undefined): string;
+  encodeFunctionData(functionFragment: "chainId", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "depositERC20",
     values: [string, BigNumberish]
@@ -102,7 +102,7 @@ interface IMXBridgeInterface extends ethers.utils.Interface {
     values: [string, string, BigNumberish, BytesLike]
   ): string;
 
-  decodeFunctionResult(functionFragment: "chainID", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "chainId", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "depositERC20",
     data: BytesLike
@@ -253,7 +253,7 @@ export class IMXBridge extends BaseContract {
   interface: IMXBridgeInterface;
 
   functions: {
-    chainID(overrides?: CallOverrides): Promise<[BigNumber]>;
+    chainId(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     depositERC20(
       _tokenAddress: string,
@@ -336,7 +336,7 @@ export class IMXBridge extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
-  chainID(overrides?: CallOverrides): Promise<BigNumber>;
+  chainId(overrides?: CallOverrides): Promise<BigNumber>;
 
   depositERC20(
     _tokenAddress: string,
@@ -416,7 +416,7 @@ export class IMXBridge extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    chainID(overrides?: CallOverrides): Promise<BigNumber>;
+    chainId(overrides?: CallOverrides): Promise<BigNumber>;
 
     depositERC20(
       _tokenAddress: string,
@@ -585,7 +585,7 @@ export class IMXBridge extends BaseContract {
   };
 
   estimateGas: {
-    chainID(overrides?: CallOverrides): Promise<BigNumber>;
+    chainId(overrides?: CallOverrides): Promise<BigNumber>;
 
     depositERC20(
       _tokenAddress: string,
@@ -669,7 +669,7 @@ export class IMXBridge extends BaseContract {
   };
 
   populateTransaction: {
-    chainID(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+    chainId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     depositERC20(
       _tokenAddress: string,

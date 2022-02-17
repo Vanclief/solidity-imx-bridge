@@ -157,8 +157,6 @@ describe("IMXBridge: ERC721", function () {
       nonce.toNumber()
     );
 
-    console.log("expected nonce", nonce.toNumber());
-
     await expect(
       imxBridge.withdrawERC721(to, tokenAddress, tokenId, signature)
     ).to.be.revertedWith("ERC721 is not on the vault");

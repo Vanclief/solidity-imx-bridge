@@ -7,11 +7,8 @@ import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
 
-
 import "./SignatureChecker.sol";
 import "./../tokens/IBridgeable.sol";
-import "hardhat/console.sol"; // TODO: Remove only for debug
-
 
 /// @author Franco Valencia
 /// @title A Bridge contract between IMX and EVM compatible blockchains
@@ -87,7 +84,7 @@ contract IMXBridge is Ownable, SignatureChecker, ReentrancyGuard{
     /// @dev Deposits an ERC20 token to the Bridge and proceeds to
     /// burn it
     function depositERC20(address _tokenAddress, uint256 _amount) external registered(_tokenAddress) nonReentrant {
-        require(_amount > 0, "Deposit can't be 0");
+        require(_amount > 0, "Must deposit more than 0");
         address _bridgedTokenAddress = registeredContracts[_tokenAddress];
         IERC20(_bridgedTokenAddress).safeTransferFrom(msg.sender, address(this), _amount);
         IERC20Bridgeable(_bridgedTokenAddress).burn(address(this), _amount);
@@ -105,7 +102,7 @@ contract IMXBridge is Ownable, SignatureChecker, ReentrancyGuard{
     function withdrawERC20(address _to, address _tokenAddress, uint _amount, bytes memory _signature) external payable paysFee registered(_tokenAddress) nonReentrant {
 
         address _bridgedTokenAddress = registeredContracts[_tokenAddress];
-        uint _nonce = getNonce(msg.sender);
+        uint _nonce = getNonce(_to);
         bool valid = _verifyERC20Withdrawal(signerAddress, _to, _tokenAddress, _amount, _nonce, _signature);
         require(valid, "Invalid signature");
 
@@ -120,7 +117,7 @@ contract IMXBridge is Ownable, SignatureChecker, ReentrancyGuard{
     function withdrawERC721(address _to, address _tokenAddress, uint _tokenId, bytes memory _signature) external payable paysFee registered(_tokenAddress) nonReentrant {
 
         address _bridgedTokenAddress = registeredContracts[_tokenAddress];
-        uint _nonce = getNonce(msg.sender);
+        uint _nonce = getNonce(_to);
         bool valid = _verifyERC721Withdrawal(signerAddress, _to, _tokenAddress, _tokenId, _nonce, _signature);
         require(valid, "Invalid signature");
 
@@ -135,7 +132,7 @@ contract IMXBridge is Ownable, SignatureChecker, ReentrancyGuard{
             _erc721Bridgeable.mintFor(_to, _tokenId);
         }
 
-        nonces[_to] = nonces[_to].add(1);
+        nonces[_to] = _nonce.add(1);
         emit ERC721Bridged(_to, _tokenId, _bridgedTokenAddress);
     }
 

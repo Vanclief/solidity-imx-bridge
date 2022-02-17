@@ -4,6 +4,8 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/utils/math/SafeMath.sol";
+import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
+
 
 import "./SignatureChecker.sol";
 import "./../tokens/IBridgeable.sol";
@@ -15,6 +17,7 @@ import "hardhat/console.sol"; // TODO: Remove only for debug
 contract IMXBridge is Ownable, SignatureChecker {
 
     using SafeMath for uint256;
+    using SafeERC20 for IERC20;
 
     event ERC20Deposited(address from, uint256 amount, address tokenAddress);
     event ERC721Deposited(address from, uint256 id, address tokenAddress);
@@ -85,7 +88,7 @@ contract IMXBridge is Ownable, SignatureChecker {
     function depositERC20(address _tokenAddress, uint256 _amount) external registered(_tokenAddress) {
         require(_amount > 0, "Deposit can't be 0");
         address _bridgedTokenAddress = registeredContracts[_tokenAddress];
-        IERC20(_bridgedTokenAddress).transferFrom(msg.sender, address(this), _amount);
+        IERC20(_bridgedTokenAddress).safeTransferFrom(msg.sender, address(this), _amount);
         IERC20Bridgeable(_bridgedTokenAddress).burn(address(this), _amount);
         emit ERC20Deposited(msg.sender, _amount, _bridgedTokenAddress);
     }

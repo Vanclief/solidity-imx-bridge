@@ -18,14 +18,15 @@ contract IMXBridge is Ownable, SignatureChecker {
     event ERC720Bridged(address to, uint256 amount);
     event ERC721Bridged(address to, uint256 id);
 
-    uint public fee;
-    uint public chainID;
-    address public signerAddress;
+    uint public fee; // Fees charged for bridging assets to cover offchain costs
+    uint public chainID; // The chain ID where this contract is deployed
+    address public signerAddress; 
 
     mapping (address => uint) public nonces;
     mapping (address => address) public registeredContracts;
 
-    constructor(uint _chainID) {
+    constructor(address _signerAddress, uint _chainID) {
+        signerAddress = _signerAddress;
         chainID = _chainID;
     }
 

@@ -31,9 +31,10 @@ async function signWithdrawMessage(
 async function deployBridge() {
   const IMXBridge = await ethers.getContractFactory("IMXBridge");
 
+  const signerAddress = "0xc0324Dca5073Df1aaf26730471718c500d31cA01";
   const RopstenChainID = 3;
 
-  let contract = await IMXBridge.deploy(RopstenChainID);
+  let contract = await IMXBridge.deploy(signerAddress, RopstenChainID);
   await contract.deployed();
   return contract;
 }

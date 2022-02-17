@@ -1,7 +1,7 @@
 /** @format */
 
+import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
-import { assert } from "console";
 import { ethers } from "hardhat";
 import { BridgeableNFT, IMXBridge } from "../../typechain";
 import {
@@ -13,12 +13,17 @@ import {
 describe("IMXBridge: ERC721", function () {
   let imxBridge: IMXBridge;
   let erc721: BridgeableNFT;
+  let user1: SignerWithAddress;
   const tokenAddress = "0xa4ddc0932b4e97523f8198eda7a28dac2327d365";
 
   before(async function () {
     imxBridge = await deployBridge();
     erc721 = await deployBridgeableNFT(imxBridge.address);
     await imxBridge.registerContract(tokenAddress, erc721.address);
+
+    // Create a user
+    const [owner] = await ethers.getSigners();
+    user1 = owner;
   });
 
   it("Should revert withdraw if the contract is not registered", async function () {
@@ -159,7 +164,61 @@ describe("IMXBridge: ERC721", function () {
     ).to.be.revertedWith("ERC721 is not on the vault");
   });
 
-  it("Should be able to withdraw a deposited NFT with a valid signature", async function () {});
+  it("Should be able to withdraw another NFT with a valid signature", async function () {
+    const to = imxBridge.address;
+    const tokenId = 1;
+    const nonce = await imxBridge.getNonce(to);
+    const signature = await signWithdrawMessage(
+      to,
+      tokenAddress,
+      tokenId,
+      nonce.toNumber()
+    );
+
+    const tx = await imxBridge.withdrawERC721(
+      to,
+      tokenAddress,
+      tokenId,
+      signature
+    );
+    const txReceipt = await tx.wait();
+
+    expect(await erc721.ownerOf(tokenId)).to.equal(to);
+    expect(await imxBridge.getNonce(to)).to.equal(nonce.toNumber() + 1);
+    expect(txReceipt.status).to.equal(1);
+
+    if (txReceipt.events) {
+      expect(txReceipt.events.length).to.not.equal(0);
+    }
+  });
+
+  it("Should be able to withdraw a deposited NFT with a valid signature", async function () {
+    const to = "0xc0324Dca5073Df1aaf26730471718c500d31cA01";
+    const tokenId = 1;
+    const nonce = await imxBridge.getNonce(to);
+    const signature = await signWithdrawMessage(
+      to,
+      tokenAddress,
+      tokenId,
+      nonce.toNumber()
+    );
+
+    const tx = await imxBridge.withdrawERC721(
+      to,
+      tokenAddress,
+      tokenId,
+      signature
+    );
+    const txReceipt = await tx.wait();
+
+    expect(await erc721.ownerOf(tokenId)).to.equal(to);
+    expect(await imxBridge.getNonce(to)).to.equal(nonce.toNumber() + 1);
+    expect(txReceipt.status).to.equal(1);
+
+    if (txReceipt.events) {
+      expect(txReceipt.events.length).to.not.equal(0);
+    }
+  });
 
   it("Should ...", async function () {});
 });

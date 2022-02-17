@@ -30,6 +30,7 @@ interface IMXBridgeInterface extends ethers.utils.Interface {
     "getNonce(address)": FunctionFragment;
     "getSignerAddress()": FunctionFragment;
     "nonces(address)": FunctionFragment;
+    "onERC721Received(address,address,uint256,bytes)": FunctionFragment;
     "owner()": FunctionFragment;
     "registerContract(address,address)": FunctionFragment;
     "registeredContracts(address)": FunctionFragment;
@@ -59,6 +60,10 @@ interface IMXBridgeInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
   encodeFunctionData(functionFragment: "nonces", values: [string]): string;
+  encodeFunctionData(
+    functionFragment: "onERC721Received",
+    values: [string, string, BigNumberish, BytesLike]
+  ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "registerContract",
@@ -114,6 +119,10 @@ interface IMXBridgeInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "nonces", data: BytesLike): Result;
+  decodeFunctionResult(
+    functionFragment: "onERC721Received",
+    data: BytesLike
+  ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "registerContract",
@@ -268,6 +277,14 @@ export class IMXBridge extends BaseContract {
 
     nonces(arg0: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
+    onERC721Received(
+      arg0: string,
+      arg1: string,
+      arg2: BigNumberish,
+      arg3: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
+
     owner(overrides?: CallOverrides): Promise<[string]>;
 
     registerContract(
@@ -343,6 +360,14 @@ export class IMXBridge extends BaseContract {
 
   nonces(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
+  onERC721Received(
+    arg0: string,
+    arg1: string,
+    arg2: BigNumberish,
+    arg3: BytesLike,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
   owner(overrides?: CallOverrides): Promise<string>;
 
   registerContract(
@@ -414,6 +439,14 @@ export class IMXBridge extends BaseContract {
     getSignerAddress(overrides?: CallOverrides): Promise<string>;
 
     nonces(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
+
+    onERC721Received(
+      arg0: string,
+      arg1: string,
+      arg2: BigNumberish,
+      arg3: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     owner(overrides?: CallOverrides): Promise<string>;
 
@@ -576,6 +609,14 @@ export class IMXBridge extends BaseContract {
 
     nonces(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
+    onERC721Received(
+      arg0: string,
+      arg1: string,
+      arg2: BigNumberish,
+      arg3: BytesLike,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     owner(overrides?: CallOverrides): Promise<BigNumber>;
 
     registerContract(
@@ -655,6 +696,14 @@ export class IMXBridge extends BaseContract {
 
     nonces(
       arg0: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
+
+    onERC721Received(
+      arg0: string,
+      arg1: string,
+      arg2: BigNumberish,
+      arg3: BytesLike,
       overrides?: CallOverrides
     ): Promise<PopulatedTransaction>;
 

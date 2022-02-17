@@ -17,9 +17,25 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.Ownable__factory>;
     getContractFactory(
+      name: "ERC721",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ERC721__factory>;
+    getContractFactory(
+      name: "IERC721Metadata",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IERC721Metadata__factory>;
+    getContractFactory(
       name: "IERC721",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IERC721__factory>;
+    getContractFactory(
+      name: "IERC721Receiver",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IERC721Receiver__factory>;
+    getContractFactory(
+      name: "ERC165",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.ERC165__factory>;
     getContractFactory(
       name: "IERC165",
       signerOrOptions?: ethers.Signer | FactoryOptions
@@ -32,6 +48,26 @@ declare module "hardhat/types/runtime" {
       name: "SignatureChecker",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.SignatureChecker__factory>;
+    getContractFactory(
+      name: "BridgeableNFT",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.BridgeableNFT__factory>;
+    getContractFactory(
+      name: "IERC20Bridgeable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IERC20Bridgeable__factory>;
+    getContractFactory(
+      name: "IERC721Bridgeable",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IERC721Bridgeable__factory>;
+    getContractFactory(
+      name: "IMXBridgeableERC20",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IMXBridgeableERC20__factory>;
+    getContractFactory(
+      name: "IMXBridgeableERC721",
+      signerOrOptions?: ethers.Signer | FactoryOptions
+    ): Promise<Contracts.IMXBridgeableERC721__factory>;
 
     getContractAt(
       name: "Ownable",
@@ -39,10 +75,30 @@ declare module "hardhat/types/runtime" {
       signer?: ethers.Signer
     ): Promise<Contracts.Ownable>;
     getContractAt(
+      name: "ERC721",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC721>;
+    getContractAt(
+      name: "IERC721Metadata",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC721Metadata>;
+    getContractAt(
       name: "IERC721",
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.IERC721>;
+    getContractAt(
+      name: "IERC721Receiver",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC721Receiver>;
+    getContractAt(
+      name: "ERC165",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.ERC165>;
     getContractAt(
       name: "IERC165",
       address: string,
@@ -58,6 +114,31 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.SignatureChecker>;
+    getContractAt(
+      name: "BridgeableNFT",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.BridgeableNFT>;
+    getContractAt(
+      name: "IERC20Bridgeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC20Bridgeable>;
+    getContractAt(
+      name: "IERC721Bridgeable",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IERC721Bridgeable>;
+    getContractAt(
+      name: "IMXBridgeableERC20",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IMXBridgeableERC20>;
+    getContractAt(
+      name: "IMXBridgeableERC721",
+      address: string,
+      signer?: ethers.Signer
+    ): Promise<Contracts.IMXBridgeableERC721>;
 
     // default types
     getContractFactory(

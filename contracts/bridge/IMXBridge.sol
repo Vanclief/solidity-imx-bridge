@@ -82,6 +82,12 @@ contract IMXBridge is SignatureChecker, ReentrancyGuard, Ownable, IERC721Receive
         _;
     }
 
+    /// @dev A function to withdraw the fees from the contract
+    function withdrawFees() public {
+        address payable _to = payable(owner());
+        _to.transfer(address(this).balance);
+    }
+
     /// @dev Deposits an ERC20 token to the Bridge and proceeds to
     /// burn it
     function depositERC20(address _tokenAddress, uint256 _amount) external registered(_tokenAddress) nonReentrant {

@@ -41,6 +41,7 @@ interface IMXBridgeInterface extends ethers.utils.Interface {
     "transferOwnership(address)": FunctionFragment;
     "withdrawERC20(address,address,uint256,bytes)": FunctionFragment;
     "withdrawERC721(address,address,uint256,bytes)": FunctionFragment;
+    "withdrawFees()": FunctionFragment;
   };
 
   encodeFunctionData(functionFragment: "chainId", values?: undefined): string;
@@ -101,6 +102,10 @@ interface IMXBridgeInterface extends ethers.utils.Interface {
     functionFragment: "withdrawERC721",
     values: [string, string, BigNumberish, BytesLike]
   ): string;
+  encodeFunctionData(
+    functionFragment: "withdrawFees",
+    values?: undefined
+  ): string;
 
   decodeFunctionResult(functionFragment: "chainId", data: BytesLike): Result;
   decodeFunctionResult(
@@ -155,6 +160,10 @@ interface IMXBridgeInterface extends ethers.utils.Interface {
   ): Result;
   decodeFunctionResult(
     functionFragment: "withdrawERC721",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "withdrawFees",
     data: BytesLike
   ): Result;
 
@@ -334,6 +343,10 @@ export class IMXBridge extends BaseContract {
       _signature: BytesLike,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
+
+    withdrawFees(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
   };
 
   chainId(overrides?: CallOverrides): Promise<BigNumber>;
@@ -415,6 +428,10 @@ export class IMXBridge extends BaseContract {
     overrides?: PayableOverrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  withdrawFees(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   callStatic: {
     chainId(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -492,6 +509,8 @@ export class IMXBridge extends BaseContract {
       _signature: BytesLike,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    withdrawFees(overrides?: CallOverrides): Promise<void>;
   };
 
   filters: {
@@ -666,6 +685,10 @@ export class IMXBridge extends BaseContract {
       _signature: BytesLike,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
+
+    withdrawFees(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
   };
 
   populateTransaction: {
@@ -755,6 +778,10 @@ export class IMXBridge extends BaseContract {
       _tokenId: BigNumberish,
       _signature: BytesLike,
       overrides?: PayableOverrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    withdrawFees(
+      overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
   };
 }

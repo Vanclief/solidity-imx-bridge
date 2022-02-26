@@ -31,6 +31,7 @@ interface IMXBridgeInterface extends ethers.utils.Interface {
     "nonces(address)": FunctionFragment;
     "onERC721Received(address,address,uint256,bytes)": FunctionFragment;
     "owner()": FunctionFragment;
+    "paused()": FunctionFragment;
     "registerContract(address,address)": FunctionFragment;
     "registeredContracts(address)": FunctionFragment;
     "renounceOwnership()": FunctionFragment;
@@ -64,6 +65,7 @@ interface IMXBridgeInterface extends ethers.utils.Interface {
     values: [string, string, BigNumberish, BytesLike]
   ): string;
   encodeFunctionData(functionFragment: "owner", values?: undefined): string;
+  encodeFunctionData(functionFragment: "paused", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "registerContract",
     values: [string, string]
@@ -126,6 +128,7 @@ interface IMXBridgeInterface extends ethers.utils.Interface {
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "owner", data: BytesLike): Result;
+  decodeFunctionResult(functionFragment: "paused", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "registerContract",
     data: BytesLike
@@ -170,6 +173,8 @@ interface IMXBridgeInterface extends ethers.utils.Interface {
     "ERC721Bridged(address,uint256,address)": EventFragment;
     "ERC721Deposited(address,uint256,address)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
+    "Paused(address)": EventFragment;
+    "Unpaused(address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "ERC20Bridged"): EventFragment;
@@ -177,6 +182,8 @@ interface IMXBridgeInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "ERC721Bridged"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "ERC721Deposited"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Paused"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "Unpaused"): EventFragment;
 }
 
 export type ERC20BridgedEvent = TypedEvent<
@@ -214,6 +221,10 @@ export type ERC721DepositedEvent = TypedEvent<
 export type OwnershipTransferredEvent = TypedEvent<
   [string, string] & { previousOwner: string; newOwner: string }
 >;
+
+export type PausedEvent = TypedEvent<[string] & { account: string }>;
+
+export type UnpausedEvent = TypedEvent<[string] & { account: string }>;
 
 export class IMXBridge extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -290,6 +301,8 @@ export class IMXBridge extends BaseContract {
     ): Promise<[string]>;
 
     owner(overrides?: CallOverrides): Promise<[string]>;
+
+    paused(overrides?: CallOverrides): Promise<[boolean]>;
 
     registerContract(
       _tokenAddress: string,
@@ -376,6 +389,8 @@ export class IMXBridge extends BaseContract {
 
   owner(overrides?: CallOverrides): Promise<string>;
 
+  paused(overrides?: CallOverrides): Promise<boolean>;
+
   registerContract(
     _tokenAddress: string,
     _bridgedTokenAddress: string,
@@ -457,6 +472,8 @@ export class IMXBridge extends BaseContract {
     ): Promise<string>;
 
     owner(overrides?: CallOverrides): Promise<string>;
+
+    paused(overrides?: CallOverrides): Promise<boolean>;
 
     registerContract(
       _tokenAddress: string,
@@ -592,6 +609,18 @@ export class IMXBridge extends BaseContract {
       [string, string],
       { previousOwner: string; newOwner: string }
     >;
+
+    "Paused(address)"(
+      account?: null
+    ): TypedEventFilter<[string], { account: string }>;
+
+    Paused(account?: null): TypedEventFilter<[string], { account: string }>;
+
+    "Unpaused(address)"(
+      account?: null
+    ): TypedEventFilter<[string], { account: string }>;
+
+    Unpaused(account?: null): TypedEventFilter<[string], { account: string }>;
   };
 
   estimateGas: {
@@ -626,6 +655,8 @@ export class IMXBridge extends BaseContract {
     ): Promise<BigNumber>;
 
     owner(overrides?: CallOverrides): Promise<BigNumber>;
+
+    paused(overrides?: CallOverrides): Promise<BigNumber>;
 
     registerContract(
       _tokenAddress: string,
@@ -718,6 +749,8 @@ export class IMXBridge extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     owner(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    paused(overrides?: CallOverrides): Promise<PopulatedTransaction>;
 
     registerContract(
       _tokenAddress: string,

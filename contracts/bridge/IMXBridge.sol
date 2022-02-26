@@ -6,13 +6,14 @@ import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 import "@openzeppelin/contracts/token/ERC20/utils/SafeERC20.sol";
 import "@openzeppelin/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin/contracts/security/Pausable.sol";
 
 import "./SignatureChecker.sol";
 import "./../tokens/IBridgeable.sol";
 
 /// @author Franco Valencia
 /// @title A Bridge contract between IMX and EVM compatible blockchains
-contract IMXBridge is ReentrancyGuard, Ownable, IERC721Receiver{
+contract IMXBridge is ReentrancyGuard, Ownable, Pausable, IERC721Receiver{
 
     using SafeERC20 for IERC20;
 
@@ -86,7 +87,7 @@ contract IMXBridge is ReentrancyGuard, Ownable, IERC721Receiver{
 
     /// @dev Deposits an ERC20 token to the Bridge and proceeds to
     /// burn it
-    function depositERC20(address _tokenAddress, uint256 _amount) external checkRegistered(_tokenAddress) nonReentrant {
+    function depositERC20(address _tokenAddress, uint256 _amount) external checkRegistered(_tokenAddress) nonReentrant whenNotPaused {
         require(_amount > 0, "Must deposit more than 0");
         address _bridgedTokenAddress = registeredContracts[_tokenAddress];
         IERC20(_bridgedTokenAddress).safeTransferFrom(msg.sender, address(this), _amount);
@@ -95,14 +96,18 @@ contract IMXBridge is ReentrancyGuard, Ownable, IERC721Receiver{
     }
 
     /// @dev Deposits an ERC721 token to the bridge contract 
-    function depositERC721(address _tokenAddress, uint256 _id) external checkRegistered(_tokenAddress) nonReentrant {
+    function depositERC721(address _tokenAddress, uint256 _id) external checkRegistered(_tokenAddress) nonReentrant whenNotPaused {
         address _bridgedTokenAddress = registeredContracts[_tokenAddress];
         IERC721(_bridgedTokenAddress).safeTransferFrom(msg.sender, address(this), _id);
         emit ERC721Deposited(msg.sender, _id, _bridgedTokenAddress);
     }
 
+    function onERC721Received(address, address, uint256, bytes memory) public pure override returns(bytes4) {
+       return this.onERC721Received.selector;
+    }
+
     /// @dev withdraws an ERC20 token from IMX to this chain
-    function withdrawERC20(address _to, address _tokenAddress, uint _amount, bytes memory _signature) external payable paysFee checkRegistered(_tokenAddress) nonReentrant {
+    function withdrawERC20(address _to, address _tokenAddress, uint _amount, bytes memory _signature) external payable paysFee checkRegistered(_tokenAddress) nonReentrant whenNotPaused {
 
         address _bridgedTokenAddress = registeredContracts[_tokenAddress];
         uint _nonce = getNonce(_to);
@@ -117,7 +122,7 @@ contract IMXBridge is ReentrancyGuard, Ownable, IERC721Receiver{
     }
 
     /// @dev withdraws an ERC721 token from IMX to this chain
-    function withdrawERC721(address _to, address _tokenAddress, uint _tokenId, bytes memory _signature) external payable paysFee checkRegistered(_tokenAddress) nonReentrant {
+    function withdrawERC721(address _to, address _tokenAddress, uint _tokenId, bytes memory _signature) external payable paysFee checkRegistered(_tokenAddress) nonReentrant whenNotPaused{
 
         address _bridgedTokenAddress = registeredContracts[_tokenAddress];
         uint _nonce = getNonce(_to);
@@ -137,9 +142,5 @@ contract IMXBridge is ReentrancyGuard, Ownable, IERC721Receiver{
 
         nonces[_to] = nonces[_to] + 1;
         emit ERC721Bridged(_to, _tokenId, _bridgedTokenAddress);
-    }
-
-    function onERC721Received(address, address, uint256, bytes memory) public pure override returns(bytes4) {
-       return this.onERC721Received.selector;
     }
 }

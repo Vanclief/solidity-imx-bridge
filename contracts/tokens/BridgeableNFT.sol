@@ -17,16 +17,4 @@ contract BridgeableNFT is ERC721, Ownable, IMXBridgeableERC721 {
     function _mintFor(address _to, uint256 _id) internal override {
         _safeMint(_to, _id);
     }
-
-    /// @dev Overwrite the ERC721 implementation of _baseURI to get the 
-    /// base URL from a variable
-    function _baseURI() internal view override returns (string memory) {
-        return baseTokenURI;
-    }
-
-    /// @dev Allow the contract owner to update the BaseTokenURI in case of 
-    /// changes to the metadata or for late reveal
-    function setBaseTokenURI(string memory uri) public onlyOwner {
-        baseTokenURI = uri;
-    }
 }

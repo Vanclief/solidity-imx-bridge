@@ -23,15 +23,13 @@ contract IMXBridge is SignatureChecker, ReentrancyGuard, Ownable, IERC721Receive
     event ERC721Bridged(address to, uint256 id, address tokenAddress);
 
     uint public fee; // Fees charged for bridging assets to cover offchain costs
-    uint public chainId; // The chain ID where this contract is deployed
     address public signerAddress; 
 
     mapping (address => uint) public nonces;
     mapping (address => address) public registeredContracts;
 
-    constructor(address _signerAddress, uint _chainId) ReentrancyGuard() {
+    constructor(address _signerAddress) ReentrancyGuard() {
         signerAddress = _signerAddress;
-        chainId = _chainId;
     }
 
     function getSignerAddress() public view returns (address) {
@@ -108,7 +106,7 @@ contract IMXBridge is SignatureChecker, ReentrancyGuard, Ownable, IERC721Receive
 
         address _bridgedTokenAddress = registeredContracts[_tokenAddress];
         uint _nonce = getNonce(_to);
-        bool valid = _verifyERC20Withdrawal(signerAddress, _to, _tokenAddress, _amount, _nonce, chainId, _signature);
+        bool valid = _verifyERC20Withdrawal(signerAddress, _to, _tokenAddress, _amount, _nonce, block.chainid, _signature);
         require(valid, "Invalid signature");
 
         IERC20Bridgeable _erc20Bridgeable = IERC20Bridgeable(_bridgedTokenAddress); 
@@ -123,7 +121,7 @@ contract IMXBridge is SignatureChecker, ReentrancyGuard, Ownable, IERC721Receive
 
         address _bridgedTokenAddress = registeredContracts[_tokenAddress];
         uint _nonce = getNonce(_to);
-        bool valid = _verifyERC721Withdrawal(signerAddress, _to, _tokenAddress, _tokenId, _nonce, chainId, _signature);
+        bool valid = _verifyERC721Withdrawal(signerAddress, _to, _tokenAddress, _tokenId, _nonce, block.chainid, _signature);
         require(valid, "Invalid signature");
 
         // Check if the ERC721 is on the vault, otherwise mint it

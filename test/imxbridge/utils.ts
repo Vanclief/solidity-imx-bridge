@@ -2,16 +2,16 @@
 
 import { ethers } from "hardhat";
 
+const hardhatChainId = 31337;
 const privateKey =
   "0x0123456789012345678901234567890123456789012345678901234567890123";
-const RopstenChainID = 3;
 
 export async function deployBridge() {
   const IMXBridge = await ethers.getContractFactory("IMXBridge");
 
   const signerAddress = "0x14791697260E4c9A71f18484C9f997B308e59325";
 
-  let contract = await IMXBridge.deploy(signerAddress, RopstenChainID);
+  let contract = await IMXBridge.deploy(signerAddress);
   await contract.deployed();
   return contract;
 }
@@ -26,7 +26,7 @@ export async function signWithdrawMessage(
 
   let messageHash = ethers.utils.solidityKeccak256(
     ["address", "address", "uint", "uint", "uint"],
-    [to, tokenAddress, tokenId, nonce, RopstenChainID]
+    [to, tokenAddress, tokenId, nonce, hardhatChainId]
   );
 
   let messageHashBytes = ethers.utils.arrayify(messageHash);

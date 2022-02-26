@@ -22,7 +22,6 @@ import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
 interface IMXBridgeInterface extends ethers.utils.Interface {
   functions: {
-    "chainId()": FunctionFragment;
     "depositERC20(address,uint256)": FunctionFragment;
     "depositERC721(address,uint256)": FunctionFragment;
     "fee()": FunctionFragment;
@@ -44,7 +43,6 @@ interface IMXBridgeInterface extends ethers.utils.Interface {
     "withdrawFees()": FunctionFragment;
   };
 
-  encodeFunctionData(functionFragment: "chainId", values?: undefined): string;
   encodeFunctionData(
     functionFragment: "depositERC20",
     values: [string, BigNumberish]
@@ -107,7 +105,6 @@ interface IMXBridgeInterface extends ethers.utils.Interface {
     values?: undefined
   ): string;
 
-  decodeFunctionResult(functionFragment: "chainId", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "depositERC20",
     data: BytesLike
@@ -262,8 +259,6 @@ export class IMXBridge extends BaseContract {
   interface: IMXBridgeInterface;
 
   functions: {
-    chainId(overrides?: CallOverrides): Promise<[BigNumber]>;
-
     depositERC20(
       _tokenAddress: string,
       _amount: BigNumberish,
@@ -349,8 +344,6 @@ export class IMXBridge extends BaseContract {
     ): Promise<ContractTransaction>;
   };
 
-  chainId(overrides?: CallOverrides): Promise<BigNumber>;
-
   depositERC20(
     _tokenAddress: string,
     _amount: BigNumberish,
@@ -433,8 +426,6 @@ export class IMXBridge extends BaseContract {
   ): Promise<ContractTransaction>;
 
   callStatic: {
-    chainId(overrides?: CallOverrides): Promise<BigNumber>;
-
     depositERC20(
       _tokenAddress: string,
       _amount: BigNumberish,
@@ -604,8 +595,6 @@ export class IMXBridge extends BaseContract {
   };
 
   estimateGas: {
-    chainId(overrides?: CallOverrides): Promise<BigNumber>;
-
     depositERC20(
       _tokenAddress: string,
       _amount: BigNumberish,
@@ -692,8 +681,6 @@ export class IMXBridge extends BaseContract {
   };
 
   populateTransaction: {
-    chainId(overrides?: CallOverrides): Promise<PopulatedTransaction>;
-
     depositERC20(
       _tokenAddress: string,
       _amount: BigNumberish,

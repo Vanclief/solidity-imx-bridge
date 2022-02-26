@@ -2,39 +2,14 @@
 
 import { expect } from "chai";
 import { ethers } from "hardhat";
-import { BridgeableNFT, IMXBridge } from "../../typechain";
-
-// A random testing private key
-const privateKey =
-  "0x0123456789012345678901234567890123456789012345678901234567890123";
-
-async function signWithdrawMessage(
-  to: string,
-  tokenAddress: string,
-  tokenId: number,
-  nonce: number
-) {
-  let wallet = new ethers.Wallet(privateKey);
-
-  let messageHash = ethers.utils.solidityKeccak256(
-    ["address", "address", "uint", "uint"],
-    [to, tokenAddress, tokenId, nonce]
-  );
-
-  let messageHashBytes = ethers.utils.arrayify(messageHash);
-
-  let flatSig = await wallet.signMessage(messageHashBytes);
-
-  return flatSig;
-}
+import { IMXBridge } from "../../typechain";
 
 async function deployBridge() {
   const IMXBridge = await ethers.getContractFactory("IMXBridge");
 
   const signerAddress = "0xc0324Dca5073Df1aaf26730471718c500d31cA01";
-  const RopstenChainID = 3;
 
-  let contract = await IMXBridge.deploy(signerAddress, RopstenChainID);
+  let contract = await IMXBridge.deploy(signerAddress);
   await contract.deployed();
   return contract;
 }

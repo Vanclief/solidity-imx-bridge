@@ -28,7 +28,7 @@ contract IMXBridge is SignatureChecker, ReentrancyGuard, Ownable, IERC721Receive
     mapping (address => uint) public nonces;
     mapping (address => address) public registeredContracts;
 
-    constructor(address _signerAddress) ReentrancyGuard() {
+    constructor(address _signerAddress) {
         signerAddress = _signerAddress;
     }
 

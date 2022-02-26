@@ -2,7 +2,7 @@ pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/utils/cryptography/ECDSA.sol";
 
-contract SignatureChecker {
+library SignatureChecker {
 
     /// @dev Gets the message hash for an ERC20 Withdrawal
     function _getERC20MessageHash(
@@ -16,7 +16,7 @@ contract SignatureChecker {
     }
 
     /// @dev Verifies the signature for an ERC20 Withdrawal
-    function _verifyERC20Withdrawal(
+    function verifyERC20Withdrawal(
         address _signer,
         address _to,
         address _tokenAddress,
@@ -41,7 +41,7 @@ contract SignatureChecker {
     }
 
     /// @dev Verifies the signature for an ERC721 Withdrawal
-    function _verifyERC721Withdrawal(
+    function verifyERC721Withdrawal(
         address _signer,
         address _to,
         address _tokenAddress,

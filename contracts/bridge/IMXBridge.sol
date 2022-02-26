@@ -12,7 +12,7 @@ import "./../tokens/IBridgeable.sol";
 
 /// @author Franco Valencia
 /// @title A Bridge contract between IMX and EVM compatible blockchains
-contract IMXBridge is SignatureChecker, ReentrancyGuard, Ownable, IERC721Receiver{
+contract IMXBridge is ReentrancyGuard, Ownable, IERC721Receiver{
 
     using SafeERC20 for IERC20;
 
@@ -106,7 +106,7 @@ contract IMXBridge is SignatureChecker, ReentrancyGuard, Ownable, IERC721Receive
 
         address _bridgedTokenAddress = registeredContracts[_tokenAddress];
         uint _nonce = getNonce(_to);
-        bool valid = _verifyERC20Withdrawal(signerAddress, _to, _tokenAddress, _amount, _nonce, block.chainid, _signature);
+        bool valid = SignatureChecker.verifyERC20Withdrawal(signerAddress, _to, _tokenAddress, _amount, _nonce, block.chainid, _signature);
         require(valid, "Invalid signature");
 
         IERC20Bridgeable _erc20Bridgeable = IERC20Bridgeable(_bridgedTokenAddress); 
@@ -121,7 +121,7 @@ contract IMXBridge is SignatureChecker, ReentrancyGuard, Ownable, IERC721Receive
 
         address _bridgedTokenAddress = registeredContracts[_tokenAddress];
         uint _nonce = getNonce(_to);
-        bool valid = _verifyERC721Withdrawal(signerAddress, _to, _tokenAddress, _tokenId, _nonce, block.chainid, _signature);
+        bool valid = SignatureChecker.verifyERC721Withdrawal(signerAddress, _to, _tokenAddress, _tokenId, _nonce, block.chainid, _signature);
         require(valid, "Invalid signature");
 
         // Check if the ERC721 is on the vault, otherwise mint it

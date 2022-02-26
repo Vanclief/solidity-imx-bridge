@@ -35,6 +35,7 @@ contract IMXBridge is ReentrancyGuard, Ownable, Pausable, IERC721Receiver{
         signerAddress = _signerAddress;
     }
 
+    /// @dev Returns the signer public address
     function getSignerAddress() public view returns (address) {
         return signerAddress;
     }
@@ -48,6 +49,7 @@ contract IMXBridge is ReentrancyGuard, Ownable, Pausable, IERC721Receiver{
         emit OwnershipTransferred(oldSigner, _signerAddress);
     }
 
+    /// @dev Returns the current fee
     function getFee() public view returns (uint) {
         return fee;
     }
@@ -69,6 +71,11 @@ contract IMXBridge is ReentrancyGuard, Ownable, Pausable, IERC721Receiver{
     /// address of the contract on the current chain
     function registerContract(address _tokenAddress, address _bridgedTokenAddress) public onlyOwner {
         registeredContracts[_tokenAddress] = _bridgedTokenAddress;
+    }
+
+    /// @dev Returns if the contract is registered
+    function isRegistered(address _tokenAddress) public view returns (address) {
+        return registeredContracts[_tokenAddress];
     }
 
     /// @dev Modifier for checking that the address is registered 

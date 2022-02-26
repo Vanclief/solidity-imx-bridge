@@ -28,6 +28,7 @@ interface IMXBridgeInterface extends ethers.utils.Interface {
     "getFee()": FunctionFragment;
     "getNonce(address)": FunctionFragment;
     "getSignerAddress()": FunctionFragment;
+    "isRegistered(address)": FunctionFragment;
     "nonces(address)": FunctionFragment;
     "onERC721Received(address,address,uint256,bytes)": FunctionFragment;
     "owner()": FunctionFragment;
@@ -58,6 +59,10 @@ interface IMXBridgeInterface extends ethers.utils.Interface {
   encodeFunctionData(
     functionFragment: "getSignerAddress",
     values?: undefined
+  ): string;
+  encodeFunctionData(
+    functionFragment: "isRegistered",
+    values: [string]
   ): string;
   encodeFunctionData(functionFragment: "nonces", values: [string]): string;
   encodeFunctionData(
@@ -120,6 +125,10 @@ interface IMXBridgeInterface extends ethers.utils.Interface {
   decodeFunctionResult(functionFragment: "getNonce", data: BytesLike): Result;
   decodeFunctionResult(
     functionFragment: "getSignerAddress",
+    data: BytesLike
+  ): Result;
+  decodeFunctionResult(
+    functionFragment: "isRegistered",
     data: BytesLike
   ): Result;
   decodeFunctionResult(functionFragment: "nonces", data: BytesLike): Result;
@@ -296,6 +305,11 @@ export class IMXBridge extends BaseContract {
 
     getSignerAddress(overrides?: CallOverrides): Promise<[string]>;
 
+    isRegistered(
+      _tokenAddress: string,
+      overrides?: CallOverrides
+    ): Promise<[string]>;
+
     nonces(arg0: string, overrides?: CallOverrides): Promise<[BigNumber]>;
 
     onERC721Received(
@@ -383,6 +397,11 @@ export class IMXBridge extends BaseContract {
 
   getSignerAddress(overrides?: CallOverrides): Promise<string>;
 
+  isRegistered(
+    _tokenAddress: string,
+    overrides?: CallOverrides
+  ): Promise<string>;
+
   nonces(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
   onERC721Received(
@@ -466,6 +485,11 @@ export class IMXBridge extends BaseContract {
     getNonce(_address: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     getSignerAddress(overrides?: CallOverrides): Promise<string>;
+
+    isRegistered(
+      _tokenAddress: string,
+      overrides?: CallOverrides
+    ): Promise<string>;
 
     nonces(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -666,6 +690,11 @@ export class IMXBridge extends BaseContract {
 
     getSignerAddress(overrides?: CallOverrides): Promise<BigNumber>;
 
+    isRegistered(
+      _tokenAddress: string,
+      overrides?: CallOverrides
+    ): Promise<BigNumber>;
+
     nonces(arg0: string, overrides?: CallOverrides): Promise<BigNumber>;
 
     onERC721Received(
@@ -756,6 +785,11 @@ export class IMXBridge extends BaseContract {
     ): Promise<PopulatedTransaction>;
 
     getSignerAddress(overrides?: CallOverrides): Promise<PopulatedTransaction>;
+
+    isRegistered(
+      _tokenAddress: string,
+      overrides?: CallOverrides
+    ): Promise<PopulatedTransaction>;
 
     nonces(
       arg0: string,

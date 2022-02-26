@@ -175,6 +175,7 @@ interface IMXBridgeInterface extends ethers.utils.Interface {
     "OwnershipTransferred(address,address)": EventFragment;
     "Paused(address)": EventFragment;
     "Unpaused(address)": EventFragment;
+    "UpdatedSignerAddress(address,address)": EventFragment;
   };
 
   getEvent(nameOrSignatureOrTopic: "ERC20Bridged"): EventFragment;
@@ -184,6 +185,7 @@ interface IMXBridgeInterface extends ethers.utils.Interface {
   getEvent(nameOrSignatureOrTopic: "OwnershipTransferred"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Paused"): EventFragment;
   getEvent(nameOrSignatureOrTopic: "Unpaused"): EventFragment;
+  getEvent(nameOrSignatureOrTopic: "UpdatedSignerAddress"): EventFragment;
 }
 
 export type ERC20BridgedEvent = TypedEvent<
@@ -225,6 +227,10 @@ export type OwnershipTransferredEvent = TypedEvent<
 export type PausedEvent = TypedEvent<[string] & { account: string }>;
 
 export type UnpausedEvent = TypedEvent<[string] & { account: string }>;
+
+export type UpdatedSignerAddressEvent = TypedEvent<
+  [string, string] & { previousSigner: string; newSigner: string }
+>;
 
 export class IMXBridge extends BaseContract {
   connect(signerOrProvider: Signer | Provider | string): this;
@@ -621,6 +627,22 @@ export class IMXBridge extends BaseContract {
     ): TypedEventFilter<[string], { account: string }>;
 
     Unpaused(account?: null): TypedEventFilter<[string], { account: string }>;
+
+    "UpdatedSignerAddress(address,address)"(
+      previousSigner?: string | null,
+      newSigner?: string | null
+    ): TypedEventFilter<
+      [string, string],
+      { previousSigner: string; newSigner: string }
+    >;
+
+    UpdatedSignerAddress(
+      previousSigner?: string | null,
+      newSigner?: string | null
+    ): TypedEventFilter<
+      [string, string],
+      { previousSigner: string; newSigner: string }
+    >;
   };
 
   estimateGas: {

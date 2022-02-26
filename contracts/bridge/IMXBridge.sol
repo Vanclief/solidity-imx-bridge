@@ -17,6 +17,8 @@ contract IMXBridge is ReentrancyGuard, Ownable, Pausable, IERC721Receiver{
 
     using SafeERC20 for IERC20;
 
+    event UpdatedSignerAddress(address indexed previousSigner, address indexed newSigner);
+
     event ERC20Deposited(address from, uint256 amount, address tokenAddress);
     event ERC721Deposited(address from, uint256 id, address tokenAddress);
 
@@ -40,7 +42,10 @@ contract IMXBridge is ReentrancyGuard, Ownable, Pausable, IERC721Receiver{
     /// @dev The bridge must be able to update the signer address 
     /// in case the signer private key is compromised.
     function setSignerAddress(address _signerAddress) external onlyOwner {
+        address oldSigner = signerAddress;
         signerAddress = _signerAddress;
+        _pause();
+        emit OwnershipTransferred(oldSigner, _signerAddress);
     }
 
     function getFee() public view returns (uint) {

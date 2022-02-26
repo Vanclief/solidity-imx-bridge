@@ -1,7 +1,6 @@
 pragma solidity ^0.8.4;
 
 import "@openzeppelin/contracts/access/Ownable.sol";
-import "@openzeppelin/contracts/utils/math/SafeMath.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721.sol";
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
@@ -15,7 +14,6 @@ import "./../tokens/IBridgeable.sol";
 /// @title A Bridge contract between IMX and EVM compatible blockchains
 contract IMXBridge is SignatureChecker, ReentrancyGuard, Ownable, IERC721Receiver{
 
-    using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
     event ERC20Deposited(address from, uint256 amount, address tokenAddress);
@@ -116,7 +114,7 @@ contract IMXBridge is SignatureChecker, ReentrancyGuard, Ownable, IERC721Receive
         IERC20Bridgeable _erc20Bridgeable = IERC20Bridgeable(_bridgedTokenAddress); 
         _erc20Bridgeable.mintFor(_to, _amount);
 
-        nonces[_to] = nonces[_to].add(1);
+        nonces[_to] = nonces[_to] +1;
         emit ERC20Bridged(_to, _amount, _bridgedTokenAddress);
     }
 
@@ -139,7 +137,7 @@ contract IMXBridge is SignatureChecker, ReentrancyGuard, Ownable, IERC721Receive
             _erc721Bridgeable.mintFor(_to, _tokenId);
         }
 
-        nonces[_to] = _nonce.add(1);
+        nonces[_to] = nonces[_to] + 1;
         emit ERC721Bridged(_to, _tokenId, _bridgedTokenAddress);
     }
 

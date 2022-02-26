@@ -68,7 +68,7 @@ contract IMXBridge is SignatureChecker, ReentrancyGuard, Ownable, IERC721Receive
     }
 
     /// @dev Modifier for checking that the address is registered 
-    modifier registered(address _tokenAddress) {
+    modifier checkRegistered(address _tokenAddress) {
         require(registeredContracts[_tokenAddress] != address(0), "Contract is not registered");
         _;
     }
@@ -88,7 +88,7 @@ contract IMXBridge is SignatureChecker, ReentrancyGuard, Ownable, IERC721Receive
 
     /// @dev Deposits an ERC20 token to the Bridge and proceeds to
     /// burn it
-    function depositERC20(address _tokenAddress, uint256 _amount) external registered(_tokenAddress) nonReentrant {
+    function depositERC20(address _tokenAddress, uint256 _amount) external checkRegistered(_tokenAddress) nonReentrant {
         require(_amount > 0, "Must deposit more than 0");
         address _bridgedTokenAddress = registeredContracts[_tokenAddress];
         IERC20(_bridgedTokenAddress).safeTransferFrom(msg.sender, address(this), _amount);
@@ -97,14 +97,14 @@ contract IMXBridge is SignatureChecker, ReentrancyGuard, Ownable, IERC721Receive
     }
 
     /// @dev Deposits an ERC721 token to the bridge contract 
-    function depositERC721(address _tokenAddress, uint256 _id) external registered(_tokenAddress) nonReentrant {
+    function depositERC721(address _tokenAddress, uint256 _id) external checkRegistered(_tokenAddress) nonReentrant {
         address _bridgedTokenAddress = registeredContracts[_tokenAddress];
         IERC721(_bridgedTokenAddress).safeTransferFrom(msg.sender, address(this), _id);
         emit ERC721Deposited(msg.sender, _id, _bridgedTokenAddress);
     }
 
     /// @dev withdraws an ERC20 token from IMX to this chain
-    function withdrawERC20(address _to, address _tokenAddress, uint _amount, bytes memory _signature) external payable paysFee registered(_tokenAddress) nonReentrant {
+    function withdrawERC20(address _to, address _tokenAddress, uint _amount, bytes memory _signature) external payable paysFee checkRegistered(_tokenAddress) nonReentrant {
 
         address _bridgedTokenAddress = registeredContracts[_tokenAddress];
         uint _nonce = getNonce(_to);
@@ -119,7 +119,7 @@ contract IMXBridge is SignatureChecker, ReentrancyGuard, Ownable, IERC721Receive
     }
 
     /// @dev withdraws an ERC721 token from IMX to this chain
-    function withdrawERC721(address _to, address _tokenAddress, uint _tokenId, bytes memory _signature) external payable paysFee registered(_tokenAddress) nonReentrant {
+    function withdrawERC721(address _to, address _tokenAddress, uint _tokenId, bytes memory _signature) external payable paysFee checkRegistered(_tokenAddress) nonReentrant {
 
         address _bridgedTokenAddress = registeredContracts[_tokenAddress];
         uint _nonce = getNonce(_to);

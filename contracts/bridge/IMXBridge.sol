@@ -81,7 +81,7 @@ contract IMXBridge is SignatureChecker, ReentrancyGuard, Ownable, IERC721Receive
     }
 
     /// @dev A function to withdraw the fees from the contract
-    function withdrawFees() public {
+    function withdrawFees() public onlyOwner {
         address payable _to = payable(owner());
         _to.transfer(address(this).balance);
     }

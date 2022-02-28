@@ -1,8 +1,10 @@
 # solidity-imx-bridge
-Solidity Smart Contracts for Immutable X Bridge
+Solidity Smart Contracts for Immutable X Bridge accros other EVM
+compatible chains.
 
-## Dev
+## Devevelopment
 
+Run tests:
 ```
 npx hardhat test
 ```

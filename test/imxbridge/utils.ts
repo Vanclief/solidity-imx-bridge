@@ -15,7 +15,28 @@ export async function deployBridge() {
   return contract;
 }
 
-export async function signWithdrawMessage(
+export async function signERC20WithdrawMessage(
+  to: string,
+  tokenAddress: string,
+  amount: number,
+  nonce: number,
+  chainID: number
+) {
+  let wallet = new ethers.Wallet(privateKey);
+
+  let messageHash = ethers.utils.solidityKeccak256(
+    ["address", "address", "uint", "uint", "uint"],
+    [to, tokenAddress, amount, nonce, chainID]
+  );
+
+  let messageHashBytes = ethers.utils.arrayify(messageHash);
+
+  let flatSig = await wallet.signMessage(messageHashBytes);
+
+  return flatSig;
+}
+
+export async function signERC721WithdrawMessage(
   to: string,
   tokenAddress: string,
   tokenId: number,
@@ -36,10 +57,22 @@ export async function signWithdrawMessage(
   return flatSig;
 }
 
-export async function deployBridgeableNFT(imxBridgeAddress: string) {
-  const BridgeableNFT = await ethers.getContractFactory("BridgeableNFT");
+export async function deployBridgeableERC20(imxBridgeAddress: string) {
+  const BridgeableERC20 = await ethers.getContractFactory("BridgeableERC20");
 
-  let contract = await BridgeableNFT.deploy(
+  let contract = await BridgeableERC20.deploy(
+    "CryptoXolos",
+    "CX",
+    imxBridgeAddress
+  );
+  await contract.deployed();
+  return contract;
+}
+
+export async function deployBridgeableERC721(imxBridgeAddress: string) {
+  const BridgeableERC721 = await ethers.getContractFactory("BridgeableERC721");
+
+  let contract = await BridgeableERC721.deploy(
     "CryptoXolos",
     "CX",
     imxBridgeAddress

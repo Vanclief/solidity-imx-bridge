@@ -5,7 +5,7 @@ import "@openzeppelin/contracts/access/Ownable.sol";
 import "@openzeppelin/contracts/token/ERC721/ERC721.sol";
 import "./IMXBridgeableERC721.sol";
 
-contract BridgeableNFT is ERC721, Ownable, IMXBridgeableERC721 {
+contract BridgeableERC721 is ERC721, Ownable, IMXBridgeableERC721 {
 
     string public baseTokenURI;
 

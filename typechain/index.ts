@@ -3,6 +3,9 @@
 /* eslint-disable */
 export type { Ownable } from "./Ownable";
 export type { Pausable } from "./Pausable";
+export type { ERC20 } from "./ERC20";
+export type { ERC20Burnable } from "./ERC20Burnable";
+export type { IERC20Metadata } from "./IERC20Metadata";
 export type { IERC20 } from "./IERC20";
 export type { ERC721 } from "./ERC721";
 export type { IERC721Metadata } from "./IERC721Metadata";
@@ -11,6 +14,8 @@ export type { IERC721Receiver } from "./IERC721Receiver";
 export type { ERC165 } from "./ERC165";
 export type { IERC165 } from "./IERC165";
 export type { IMXBridge } from "./IMXBridge";
+export type { BridgeableERC20 } from "./BridgeableERC20";
+export type { BridgeableERC721 } from "./BridgeableERC721";
 export type { BridgeableNFT } from "./BridgeableNFT";
 export type { IERC20Bridgeable } from "./IERC20Bridgeable";
 export type { IERC721Bridgeable } from "./IERC721Bridgeable";
@@ -19,6 +24,9 @@ export type { IMXBridgeableERC721 } from "./IMXBridgeableERC721";
 
 export { Ownable__factory } from "./factories/Ownable__factory";
 export { Pausable__factory } from "./factories/Pausable__factory";
+export { ERC20__factory } from "./factories/ERC20__factory";
+export { ERC20Burnable__factory } from "./factories/ERC20Burnable__factory";
+export { IERC20Metadata__factory } from "./factories/IERC20Metadata__factory";
 export { IERC20__factory } from "./factories/IERC20__factory";
 export { ERC721__factory } from "./factories/ERC721__factory";
 export { IERC721Metadata__factory } from "./factories/IERC721Metadata__factory";
@@ -27,6 +35,8 @@ export { IERC721Receiver__factory } from "./factories/IERC721Receiver__factory";
 export { ERC165__factory } from "./factories/ERC165__factory";
 export { IERC165__factory } from "./factories/IERC165__factory";
 export { IMXBridge__factory } from "./factories/IMXBridge__factory";
+export { BridgeableERC20__factory } from "./factories/BridgeableERC20__factory";
+export { BridgeableERC721__factory } from "./factories/BridgeableERC721__factory";
 export { BridgeableNFT__factory } from "./factories/BridgeableNFT__factory";
 export { IERC20Bridgeable__factory } from "./factories/IERC20Bridgeable__factory";
 export { IERC721Bridgeable__factory } from "./factories/IERC721Bridgeable__factory";

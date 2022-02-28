@@ -14,10 +14,10 @@ async function deployBridge() {
   return contract;
 }
 
-async function deployBridgeableNFT(imxBridgeAddress: string) {
-  const BridgeableNFT = await ethers.getContractFactory("BridgeableNFT");
+async function deployBridgeableERC721(imxBridgeAddress: string) {
+  const BridgeableERC721 = await ethers.getContractFactory("BridgeableERC721");
 
-  let contract = await BridgeableNFT.deploy(
+  let contract = await BridgeableERC721.deploy(
     "CryptoXolos",
     "CX",
     imxBridgeAddress
@@ -50,7 +50,7 @@ describe("IMXBridge: Admin functions", function () {
 
   it("Should be able to register a contract", async function () {
     const tokenContract = "0xa4ddc0932b4e97523f8198eda7a28dac2327d365";
-    const erc721 = await deployBridgeableNFT(imxBridge.address);
+    const erc721 = await deployBridgeableERC721(imxBridge.address);
 
     await imxBridge.registerContract(tokenContract, erc721.address);
   });

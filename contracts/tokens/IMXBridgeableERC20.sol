@@ -24,4 +24,13 @@ abstract contract IMXBridgeableERC20 is IERC20Bridgeable {
         address to,
         uint256 amount
     ) internal virtual;
+
+    function burn(address _from, uint256 _amount) external override {
+        _burnFrom(_from, _amount);
+    }
+
+    function _burnFrom(
+        address from,
+        uint256 amount
+    ) internal virtual;
 }

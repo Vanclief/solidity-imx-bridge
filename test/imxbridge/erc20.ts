@@ -3,24 +3,24 @@
 import { SignerWithAddress } from "@nomiclabs/hardhat-ethers/signers";
 import { expect } from "chai";
 import { ethers } from "hardhat";
-import { BridgeableERC721, IMXBridge } from "../../typechain";
+import { BridgeableERC20, IMXBridge } from "../../typechain";
 import {
   deployBridge,
-  deployBridgeableERC721,
-  signERC721WithdrawMessage,
+  deployBridgeableERC20,
+  signERC20WithdrawMessage,
 } from "./utils";
 
-describe("IMXBridge: ERC721", function () {
+describe("IMXBridge: ERC20", function () {
   let imxBridge: IMXBridge;
-  let erc721: BridgeableERC721;
+  let erc20: BridgeableERC20;
   let user1: SignerWithAddress;
   const tokenAddress = "0xa4ddc0932b4e97523f8198eda7a28dac2327d365";
   const hardhatChainId = 31337;
 
   before(async function () {
     imxBridge = await deployBridge();
-    erc721 = await deployBridgeableERC721(imxBridge.address);
-    await imxBridge.registerContract(tokenAddress, erc721.address);
+    erc20 = await deployBridgeableERC20(imxBridge.address);
+    await imxBridge.registerContract(tokenAddress, erc20.address);
 
     // Create a user
     const [owner] = await ethers.getSigners();
@@ -29,39 +29,39 @@ describe("IMXBridge: ERC721", function () {
 
   it("Should revert withdraw if the contract is not registered", async function () {
     const to = "0xc0324Dca5073Df1aaf26730471718c500d31cA01";
-    const tokenAddress = erc721.address;
-    const tokenId = 120;
+    const tokenAddress = erc20.address;
+    const amount = 100;
     const nonce = await imxBridge.getNonce(to);
-    const signature = await signERC721WithdrawMessage(
+    const signature = await signERC20WithdrawMessage(
       to,
       tokenAddress,
-      tokenId,
+      amount,
       nonce.toNumber(),
       hardhatChainId
     );
 
     await expect(
-      imxBridge.withdrawERC721(to, tokenAddress, tokenId, signature)
+      imxBridge.withdrawERC20(to, tokenAddress, amount, signature)
     ).to.be.revertedWith("Contract is not registered");
   });
 
   it("Should revert withdraw if signature has the wrong to", async function () {
     const to = "0xc0324Dca5073Df1aaf26730471718c500d31cA01";
-    const tokenId = 120;
+    const amount = 100;
     const nonce = await imxBridge.getNonce(to);
-    const signature = await signERC721WithdrawMessage(
+    const signature = await signERC20WithdrawMessage(
       to,
       tokenAddress,
-      tokenId,
+      amount,
       nonce.toNumber(),
       hardhatChainId
     );
 
     await expect(
-      imxBridge.withdrawERC721(
+      imxBridge.withdrawERC20(
         "0x456A29a466F861C17094db14501930Ce62ab4f83",
         tokenAddress,
-        tokenId,
+        amount,
         signature
       )
     ).to.be.revertedWith("Invalid signature");
@@ -69,12 +69,12 @@ describe("IMXBridge: ERC721", function () {
 
   it("Should revert withdraw if signature has the wrong tokenAddress", async function () {
     const to = "0xc0324Dca5073Df1aaf26730471718c500d31cA01";
-    const tokenId = 120;
+    const amount = 100;
     const nonce = await imxBridge.getNonce(to);
-    const signature = await signERC721WithdrawMessage(
+    const signature = await signERC20WithdrawMessage(
       to,
       tokenAddress,
-      tokenId,
+      amount,
       nonce.toNumber(),
       hardhatChainId
     );
@@ -85,10 +85,10 @@ describe("IMXBridge: ERC721", function () {
     );
 
     await expect(
-      imxBridge.withdrawERC721(
+      imxBridge.withdrawERC20(
         to,
         "0x456A29a466F861C17094db14501930Ce62ab4f83",
-        tokenId,
+        amount,
         signature
       )
     ).to.be.revertedWith("Invalid signature");
@@ -96,71 +96,71 @@ describe("IMXBridge: ERC721", function () {
 
   it("Should revert withdraw if signature has an invalid nonce", async function () {
     const to = "0xc0324Dca5073Df1aaf26730471718c500d31cA01";
-    const tokenId = 120;
+    const amount = 100;
     const nonce = 400;
-    const signature = await signERC721WithdrawMessage(
+    const signature = await signERC20WithdrawMessage(
       to,
       tokenAddress,
-      tokenId,
+      amount,
       nonce,
       hardhatChainId
     );
 
     await expect(
-      imxBridge.withdrawERC721(to, tokenAddress, tokenId, signature)
+      imxBridge.withdrawERC20(to, tokenAddress, amount, signature)
     ).to.be.revertedWith("Invalid signature");
   });
 
   it("Should revert withdraw if signature has an invalid chainID", async function () {
     const to = "0xc0324Dca5073Df1aaf26730471718c500d31cA01";
-    const tokenId = 120;
+    const amount = 100;
     const nonce = 400;
-    const signature = await signERC721WithdrawMessage(
+    const signature = await signERC20WithdrawMessage(
       to,
       tokenAddress,
-      tokenId,
+      amount,
       nonce,
       2
     );
 
     await expect(
-      imxBridge.withdrawERC721(to, tokenAddress, tokenId, signature)
+      imxBridge.withdrawERC20(to, tokenAddress, amount, signature)
     ).to.be.revertedWith("Invalid signature");
   });
 
   it("Should revert withdraw if signature is invalid ", async function () {
     const to = "0xc0324Dca5073Df1aaf26730471718c500d31cA01";
-    const tokenId = 120;
+    const amount = 100;
 
     const signature =
       "0x993dab3dd91f5c6dc28e17439be475478f5635c92a56e17e82349d3fb2f166196f466c0b4e0c146f285204f0dcb13e5ae67bc33f4b888ec32dfe0a063e8f3f781b";
 
     await expect(
-      imxBridge.withdrawERC721(to, tokenAddress, tokenId, signature)
+      imxBridge.withdrawERC20(to, tokenAddress, amount, signature)
     ).to.be.revertedWith("Invalid signature");
   });
 
-  it("Should be able to withdraw an non-minted NFT with a valid signature", async function () {
+  it("Should be able to withdraw an ERC20 with a valid signature", async function () {
     const to = "0xc0324Dca5073Df1aaf26730471718c500d31cA01";
-    const tokenId = 120;
+    const amount = 100;
     const nonce = await imxBridge.getNonce(to);
-    const signature = await signERC721WithdrawMessage(
+    const signature = await signERC20WithdrawMessage(
       to,
       tokenAddress,
-      tokenId,
+      amount,
       nonce.toNumber(),
       hardhatChainId
     );
 
-    const tx = await imxBridge.withdrawERC721(
+    const tx = await imxBridge.withdrawERC20(
       to,
       tokenAddress,
-      tokenId,
+      amount,
       signature
     );
     const txReceipt = await tx.wait();
 
-    expect(await erc721.ownerOf(tokenId)).to.equal(to);
+    expect(await erc20.balanceOf(to)).to.equal(amount);
     expect(await imxBridge.getNonce(to)).to.equal(nonce.toNumber() + 1);
     expect(txReceipt.status).to.equal(1);
 
@@ -169,44 +169,27 @@ describe("IMXBridge: ERC721", function () {
     }
   });
 
-  it("Should revert withdraw if attempting to withdraw a minted asset not in the vault", async function () {
-    const to = "0xc0324Dca5073Df1aaf26730471718c500d31cA01";
-    const tokenId = 120;
-    const nonce = await imxBridge.getNonce(to);
-    const signature = await signERC721WithdrawMessage(
-      to,
-      tokenAddress,
-      tokenId,
-      nonce.toNumber(),
-      hardhatChainId
-    );
-
-    await expect(
-      imxBridge.withdrawERC721(to, tokenAddress, tokenId, signature)
-    ).to.be.revertedWith("ERC721 is not on the vault");
-  });
-
-  it("Should be able to withdraw another NFT with a valid signature", async function () {
+  it("Should be able to withdraw to antother address with a valid signature", async function () {
     const to = imxBridge.address;
-    const tokenId = 1;
+    const amount = 100;
     const nonce = await imxBridge.getNonce(to);
-    const signature = await signERC721WithdrawMessage(
+    const signature = await signERC20WithdrawMessage(
       to,
       tokenAddress,
-      tokenId,
+      amount,
       nonce.toNumber(),
       hardhatChainId
     );
 
-    const tx = await imxBridge.withdrawERC721(
+    const tx = await imxBridge.withdrawERC20(
       to,
       tokenAddress,
-      tokenId,
+      amount,
       signature
     );
     const txReceipt = await tx.wait();
 
-    expect(await erc721.ownerOf(tokenId)).to.equal(to);
+    expect(await erc20.balanceOf(to)).to.equal(amount);
     expect(await imxBridge.getNonce(to)).to.equal(nonce.toNumber() + 1);
     expect(txReceipt.status).to.equal(1);
 
@@ -215,27 +198,27 @@ describe("IMXBridge: ERC721", function () {
     }
   });
 
-  it("Should be able to withdraw a deposited NFT with a valid signature", async function () {
+  it("Should be able to withdraw a deposited ERC20 with a valid signature", async function () {
     const to = "0xc0324Dca5073Df1aaf26730471718c500d31cA01";
-    const tokenId = 1;
+    const amount = 100;
     const nonce = await imxBridge.getNonce(to);
-    const signature = await signERC721WithdrawMessage(
+    const signature = await signERC20WithdrawMessage(
       to,
       tokenAddress,
-      tokenId,
+      amount,
       nonce.toNumber(),
       hardhatChainId
     );
 
-    const tx = await imxBridge.withdrawERC721(
+    const tx = await imxBridge.withdrawERC20(
       to,
       tokenAddress,
-      tokenId,
+      amount,
       signature
     );
     const txReceipt = await tx.wait();
 
-    expect(await erc721.ownerOf(tokenId)).to.equal(to);
+    expect(await erc20.balanceOf(to)).to.equal(amount * 2);
     expect(await imxBridge.getNonce(to)).to.equal(nonce.toNumber() + 1);
     expect(txReceipt.status).to.equal(1);
 

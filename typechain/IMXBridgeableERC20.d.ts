@@ -102,8 +102,8 @@ export class IMXBridgeableERC20 extends BaseContract {
 
   functions: {
     burn(
-      from: string,
-      amount: BigNumberish,
+      _from: string,
+      _amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -117,8 +117,8 @@ export class IMXBridgeableERC20 extends BaseContract {
   };
 
   burn(
-    from: string,
-    amount: BigNumberish,
+    _from: string,
+    _amount: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -132,8 +132,8 @@ export class IMXBridgeableERC20 extends BaseContract {
 
   callStatic: {
     burn(
-      from: string,
-      amount: BigNumberish,
+      _from: string,
+      _amount: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -160,8 +160,8 @@ export class IMXBridgeableERC20 extends BaseContract {
 
   estimateGas: {
     burn(
-      from: string,
-      amount: BigNumberish,
+      _from: string,
+      _amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -176,8 +176,8 @@ export class IMXBridgeableERC20 extends BaseContract {
 
   populateTransaction: {
     burn(
-      from: string,
-      amount: BigNumberish,
+      _from: string,
+      _amount: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

@@ -15,6 +15,7 @@ describe("IMXBridge: ERC721", function () {
   let erc721: BridgeableNFT;
   let user1: SignerWithAddress;
   const tokenAddress = "0xa4ddc0932b4e97523f8198eda7a28dac2327d365";
+  const hardhatChainId = 31337;
 
   before(async function () {
     imxBridge = await deployBridge();
@@ -35,7 +36,8 @@ describe("IMXBridge: ERC721", function () {
       to,
       tokenAddress,
       tokenId,
-      nonce.toNumber()
+      nonce.toNumber(),
+      hardhatChainId
     );
 
     await expect(
@@ -51,7 +53,8 @@ describe("IMXBridge: ERC721", function () {
       to,
       tokenAddress,
       tokenId,
-      nonce.toNumber()
+      nonce.toNumber(),
+      hardhatChainId
     );
 
     await expect(
@@ -72,7 +75,8 @@ describe("IMXBridge: ERC721", function () {
       to,
       tokenAddress,
       tokenId,
-      nonce.toNumber()
+      nonce.toNumber(),
+      hardhatChainId
     );
 
     await imxBridge.registerContract(
@@ -98,7 +102,8 @@ describe("IMXBridge: ERC721", function () {
       to,
       tokenAddress,
       tokenId,
-      nonce
+      nonce,
+      hardhatChainId
     );
 
     await expect(
@@ -106,7 +111,24 @@ describe("IMXBridge: ERC721", function () {
     ).to.be.revertedWith("Invalid signature");
   });
 
-  it("Should revert withdraw if signature has an invalid signature", async function () {
+  it("Should revert withdraw if signature has an invalid chainID", async function () {
+    const to = "0xc0324Dca5073Df1aaf26730471718c500d31cA01";
+    const tokenId = 120;
+    const nonce = 400;
+    const signature = await signWithdrawMessage(
+      to,
+      tokenAddress,
+      tokenId,
+      nonce,
+      2
+    );
+
+    await expect(
+      imxBridge.withdrawERC721(to, tokenAddress, tokenId, signature)
+    ).to.be.revertedWith("Invalid signature");
+  });
+
+  it("Should revert withdraw if signature is invalid ", async function () {
     const to = "0xc0324Dca5073Df1aaf26730471718c500d31cA01";
     const tokenId = 120;
 
@@ -126,7 +148,8 @@ describe("IMXBridge: ERC721", function () {
       to,
       tokenAddress,
       tokenId,
-      nonce.toNumber()
+      nonce.toNumber(),
+      hardhatChainId
     );
 
     const tx = await imxBridge.withdrawERC721(
@@ -154,7 +177,8 @@ describe("IMXBridge: ERC721", function () {
       to,
       tokenAddress,
       tokenId,
-      nonce.toNumber()
+      nonce.toNumber(),
+      hardhatChainId
     );
 
     await expect(
@@ -170,7 +194,8 @@ describe("IMXBridge: ERC721", function () {
       to,
       tokenAddress,
       tokenId,
-      nonce.toNumber()
+      nonce.toNumber(),
+      hardhatChainId
     );
 
     const tx = await imxBridge.withdrawERC721(
@@ -198,7 +223,8 @@ describe("IMXBridge: ERC721", function () {
       to,
       tokenAddress,
       tokenId,
-      nonce.toNumber()
+      nonce.toNumber(),
+      hardhatChainId
     );
 
     const tx = await imxBridge.withdrawERC721(

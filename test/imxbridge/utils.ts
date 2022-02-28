@@ -2,7 +2,6 @@
 
 import { ethers } from "hardhat";
 
-const hardhatChainId = 31337;
 const privateKey =
   "0x0123456789012345678901234567890123456789012345678901234567890123";
 
@@ -20,13 +19,14 @@ export async function signWithdrawMessage(
   to: string,
   tokenAddress: string,
   tokenId: number,
-  nonce: number
+  nonce: number,
+  chainID: number
 ) {
   let wallet = new ethers.Wallet(privateKey);
 
   let messageHash = ethers.utils.solidityKeccak256(
     ["address", "address", "uint", "uint", "uint"],
-    [to, tokenAddress, tokenId, nonce, hardhatChainId]
+    [to, tokenAddress, tokenId, nonce, chainID]
   );
 
   let messageHashBytes = ethers.utils.arrayify(messageHash);

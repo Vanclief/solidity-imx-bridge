@@ -73,10 +73,6 @@ declare module "hardhat/types/runtime" {
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.BridgeableERC721__factory>;
     getContractFactory(
-      name: "BridgeableNFT",
-      signerOrOptions?: ethers.Signer | FactoryOptions
-    ): Promise<Contracts.BridgeableNFT__factory>;
-    getContractFactory(
       name: "IERC20Bridgeable",
       signerOrOptions?: ethers.Signer | FactoryOptions
     ): Promise<Contracts.IERC20Bridgeable__factory>;
@@ -168,11 +164,6 @@ declare module "hardhat/types/runtime" {
       address: string,
       signer?: ethers.Signer
     ): Promise<Contracts.BridgeableERC721>;
-    getContractAt(
-      name: "BridgeableNFT",
-      address: string,
-      signer?: ethers.Signer
-    ): Promise<Contracts.BridgeableNFT>;
     getContractAt(
       name: "IERC20Bridgeable",
       address: string,

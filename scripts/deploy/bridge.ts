@@ -9,16 +9,12 @@ function sleep(ms: number) {
 async function main() {
   // Hardhat always runs the compile task when running scripts with its command
   // line interface.
-  //
-  // If this script is run directly using `node` you may want to call compile
-  // manually to make sure everything is compiled
-  // await hre.run('compile');
 
   // We get the contract to deploy
-  const forwardAddress = "0x230F253dF7521A4a5567C81A20A70e535B3CA9E1";
+  const signerAddress = "0x230F253dF7521A4a5567C81A20A70e535B3CA9E1";
 
-  const ETHForwarder = await ethers.getContractFactory("ETHForwarder");
-  const contract = await ETHForwarder.deploy(forwardAddress);
+  const IMXBridge = await ethers.getContractFactory("IMXBridge");
+  const contract = await IMXBridge.deploy(signerAddress);
 
   await contract.deployed();
 
@@ -28,7 +24,7 @@ async function main() {
   await sleep(60000 * 3);
   await run("verify:verify", {
     address: contract.address,
-    constructorArguments: [forwardAddress],
+    constructorArguments: [signerAddress],
   });
 }
 

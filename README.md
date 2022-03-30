@@ -2,7 +2,7 @@
 Solidity Smart Contracts for Immutable X Bridge accros other EVM
 compatible chains.
 
-## Devevelopment
+## Development
 
 Run tests:
 ```

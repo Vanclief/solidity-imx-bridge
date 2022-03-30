@@ -36,8 +36,8 @@ const config: HardhatUserConfig = {
     },
   },
   networks: {
-    mainnet: {
-      url: process.env.MAINNET_URL || "",
+    ethereum: {
+      url: process.env.ETHEREUM_URL || "",
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
       // gasPrice: 75000000000,
@@ -51,6 +51,12 @@ const config: HardhatUserConfig = {
     },
     polygon: {
       url: process.env.POLYGON_URL || "",
+      accounts:
+        process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
+      gasPrice: "auto",
+    },
+    mumbai: {
+      url: process.env.MUMBAI_URL || "",
       accounts:
         process.env.PRIVATE_KEY !== undefined ? [process.env.PRIVATE_KEY] : [],
       gasPrice: "auto",

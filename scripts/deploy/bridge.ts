@@ -11,7 +11,7 @@ async function main() {
   // line interface.
 
   // We get the contract to deploy
-  const signerAddress = "0x230F253dF7521A4a5567C81A20A70e535B3CA9E1";
+  const signerAddress = "0xc0324Dca5073Df1aaf26730471718c500d31cA01";
 
   const IMXBridge = await ethers.getContractFactory("IMXBridge");
   const contract = await IMXBridge.deploy(signerAddress);

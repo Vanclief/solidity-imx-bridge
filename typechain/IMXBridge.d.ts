@@ -22,8 +22,8 @@ import type { TypedEventFilter, TypedEvent, TypedListener } from "./common";
 
 interface IMXBridgeInterface extends ethers.utils.Interface {
   functions: {
-    "depositERC20(address,uint256)": FunctionFragment;
-    "depositERC721(address,uint256)": FunctionFragment;
+    "depositERC20(address,uint256,uint256)": FunctionFragment;
+    "depositERC721(address,uint256,uint256)": FunctionFragment;
     "fee()": FunctionFragment;
     "getFee()": FunctionFragment;
     "getNonce(address)": FunctionFragment;
@@ -47,11 +47,11 @@ interface IMXBridgeInterface extends ethers.utils.Interface {
 
   encodeFunctionData(
     functionFragment: "depositERC20",
-    values: [string, BigNumberish]
+    values: [string, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(
     functionFragment: "depositERC721",
-    values: [string, BigNumberish]
+    values: [string, BigNumberish, BigNumberish]
   ): string;
   encodeFunctionData(functionFragment: "fee", values?: undefined): string;
   encodeFunctionData(functionFragment: "getFee", values?: undefined): string;
@@ -178,9 +178,9 @@ interface IMXBridgeInterface extends ethers.utils.Interface {
 
   events: {
     "ERC20Bridged(address,uint256,address)": EventFragment;
-    "ERC20Deposited(address,uint256,address)": EventFragment;
+    "ERC20Deposited(address,uint256,address,uint256)": EventFragment;
     "ERC721Bridged(address,uint256,address)": EventFragment;
-    "ERC721Deposited(address,uint256,address)": EventFragment;
+    "ERC721Deposited(address,uint256,address,uint256)": EventFragment;
     "OwnershipTransferred(address,address)": EventFragment;
     "Paused(address)": EventFragment;
     "Unpaused(address)": EventFragment;
@@ -206,10 +206,11 @@ export type ERC20BridgedEvent = TypedEvent<
 >;
 
 export type ERC20DepositedEvent = TypedEvent<
-  [string, BigNumber, string] & {
+  [string, BigNumber, string, BigNumber] & {
     from: string;
     amount: BigNumber;
     tokenAddress: string;
+    destinationChainID: BigNumber;
   }
 >;
 
@@ -222,10 +223,11 @@ export type ERC721BridgedEvent = TypedEvent<
 >;
 
 export type ERC721DepositedEvent = TypedEvent<
-  [string, BigNumber, string] & {
+  [string, BigNumber, string, BigNumber] & {
     from: string;
     id: BigNumber;
     tokenAddress: string;
+    destinationChainID: BigNumber;
   }
 >;
 
@@ -288,12 +290,14 @@ export class IMXBridge extends BaseContract {
     depositERC20(
       _tokenAddress: string,
       _amount: BigNumberish,
+      _destinationChainID: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
     depositERC721(
       _tokenAddress: string,
       _id: BigNumberish,
+      _destinationChainID: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
@@ -380,12 +384,14 @@ export class IMXBridge extends BaseContract {
   depositERC20(
     _tokenAddress: string,
     _amount: BigNumberish,
+    _destinationChainID: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
   depositERC721(
     _tokenAddress: string,
     _id: BigNumberish,
+    _destinationChainID: BigNumberish,
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
@@ -469,12 +475,14 @@ export class IMXBridge extends BaseContract {
     depositERC20(
       _tokenAddress: string,
       _amount: BigNumberish,
+      _destinationChainID: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
     depositERC721(
       _tokenAddress: string,
       _id: BigNumberish,
+      _destinationChainID: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
 
@@ -570,22 +578,34 @@ export class IMXBridge extends BaseContract {
       { to: string; amount: BigNumber; tokenAddress: string }
     >;
 
-    "ERC20Deposited(address,uint256,address)"(
+    "ERC20Deposited(address,uint256,address,uint256)"(
       from?: null,
       amount?: null,
-      tokenAddress?: null
+      tokenAddress?: null,
+      destinationChainID?: null
     ): TypedEventFilter<
-      [string, BigNumber, string],
-      { from: string; amount: BigNumber; tokenAddress: string }
+      [string, BigNumber, string, BigNumber],
+      {
+        from: string;
+        amount: BigNumber;
+        tokenAddress: string;
+        destinationChainID: BigNumber;
+      }
     >;
 
     ERC20Deposited(
       from?: null,
       amount?: null,
-      tokenAddress?: null
+      tokenAddress?: null,
+      destinationChainID?: null
     ): TypedEventFilter<
-      [string, BigNumber, string],
-      { from: string; amount: BigNumber; tokenAddress: string }
+      [string, BigNumber, string, BigNumber],
+      {
+        from: string;
+        amount: BigNumber;
+        tokenAddress: string;
+        destinationChainID: BigNumber;
+      }
     >;
 
     "ERC721Bridged(address,uint256,address)"(
@@ -606,22 +626,34 @@ export class IMXBridge extends BaseContract {
       { to: string; id: BigNumber; tokenAddress: string }
     >;
 
-    "ERC721Deposited(address,uint256,address)"(
+    "ERC721Deposited(address,uint256,address,uint256)"(
       from?: null,
       id?: null,
-      tokenAddress?: null
+      tokenAddress?: null,
+      destinationChainID?: null
     ): TypedEventFilter<
-      [string, BigNumber, string],
-      { from: string; id: BigNumber; tokenAddress: string }
+      [string, BigNumber, string, BigNumber],
+      {
+        from: string;
+        id: BigNumber;
+        tokenAddress: string;
+        destinationChainID: BigNumber;
+      }
     >;
 
     ERC721Deposited(
       from?: null,
       id?: null,
-      tokenAddress?: null
+      tokenAddress?: null,
+      destinationChainID?: null
     ): TypedEventFilter<
-      [string, BigNumber, string],
-      { from: string; id: BigNumber; tokenAddress: string }
+      [string, BigNumber, string, BigNumber],
+      {
+        from: string;
+        id: BigNumber;
+        tokenAddress: string;
+        destinationChainID: BigNumber;
+      }
     >;
 
     "OwnershipTransferred(address,address)"(
@@ -673,12 +705,14 @@ export class IMXBridge extends BaseContract {
     depositERC20(
       _tokenAddress: string,
       _amount: BigNumberish,
+      _destinationChainID: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
     depositERC721(
       _tokenAddress: string,
       _id: BigNumberish,
+      _destinationChainID: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
@@ -766,12 +800,14 @@ export class IMXBridge extends BaseContract {
     depositERC20(
       _tokenAddress: string,
       _amount: BigNumberish,
+      _destinationChainID: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 
     depositERC721(
       _tokenAddress: string,
       _id: BigNumberish,
+      _destinationChainID: BigNumberish,
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

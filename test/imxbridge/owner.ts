@@ -7,7 +7,7 @@ import { IMXBridge } from "../../typechain";
 async function deployBridge() {
   const IMXBridge = await ethers.getContractFactory("IMXBridge");
 
-  const signerAddress = "0xc0324Dca5073Df1aaf26730471718c500d31cA01";
+  const signerAddress = "0x14791697260E4c9A71f18484C9f997B308e59325";
 
   let contract = await IMXBridge.deploy(signerAddress);
   await contract.deployed();

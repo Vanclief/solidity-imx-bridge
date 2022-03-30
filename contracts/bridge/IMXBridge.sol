@@ -19,8 +19,8 @@ contract IMXBridge is ReentrancyGuard, Ownable, Pausable, IERC721Receiver{
 
     event UpdatedSignerAddress(address indexed previousSigner, address indexed newSigner);
 
-    event ERC20Deposited(address from, uint256 amount, address tokenAddress);
-    event ERC721Deposited(address from, uint256 id, address tokenAddress);
+    event ERC20Deposited(address from, uint256 amount, address tokenAddress, uint256 destinationChainID);
+    event ERC721Deposited(address from, uint256 id, address tokenAddress, uint256 destinationChainID);
 
     event ERC20Bridged(address to, uint256 amount, address tokenAddress);
     event ERC721Bridged(address to, uint256 id, address tokenAddress);
@@ -99,19 +99,20 @@ contract IMXBridge is ReentrancyGuard, Ownable, Pausable, IERC721Receiver{
 
     /// @dev Deposits an ERC20 token to the Bridge and proceeds to
     /// burn it
-    function depositERC20(address _tokenAddress, uint256 _amount) external checkRegistered(_tokenAddress) nonReentrant whenNotPaused {
+    function depositERC20(address _tokenAddress, uint256 _amount, uint256 _destinationChainID) external checkRegistered(_tokenAddress) nonReentrant whenNotPaused {
         require(_amount > 0, "Must deposit more than 0");
         address _bridgedTokenAddress = registeredContracts[_tokenAddress];
+        require(IERC20(_bridgedTokenAddress).allowance(msg.sender, address(this)) >= _amount, "Insufficient ERC20 allowance");
         IERC20(_bridgedTokenAddress).safeTransferFrom(msg.sender, address(this), _amount);
         IERC20Bridgeable(_bridgedTokenAddress).burn(address(this), _amount);
-        emit ERC20Deposited(msg.sender, _amount, _bridgedTokenAddress);
+        emit ERC20Deposited(msg.sender, _amount, _bridgedTokenAddress, _destinationChainID);
     }
 
     /// @dev Deposits an ERC721 token to the bridge contract 
-    function depositERC721(address _tokenAddress, uint256 _id) external checkRegistered(_tokenAddress) nonReentrant whenNotPaused {
+    function depositERC721(address _tokenAddress, uint256 _id, uint256 _destinationChainID) external checkRegistered(_tokenAddress) nonReentrant whenNotPaused {
         address _bridgedTokenAddress = registeredContracts[_tokenAddress];
         IERC721(_bridgedTokenAddress).safeTransferFrom(msg.sender, address(this), _id);
-        emit ERC721Deposited(msg.sender, _id, _bridgedTokenAddress);
+        emit ERC721Deposited(msg.sender, _id, _bridgedTokenAddress, _destinationChainID);
     }
 
     function onERC721Received(address, address, uint256, bytes memory) public pure override returns(bytes4) {

@@ -243,4 +243,24 @@ describe("IMXBridge: ERC721", function () {
       expect(txReceipt.events.length).to.not.equal(0);
     }
   });
+
+  it("Should be able to deposit an ERC721", async function () {
+    const tokenId = 1;
+
+    const tx1 = await erc721.connect(user1).approve(imxBridge.address, tokenId);
+    const txReceipt1 = await tx1.wait();
+
+    expect(txReceipt1.status).to.equal(1);
+
+    const tx2 = await imxBridge
+      .connect(user1)
+      .depositERC721(tokenAddress, tokenId, 1);
+    const txReceipt2 = await tx2.wait();
+
+    expect(txReceipt2.status).to.equal(1);
+
+    if (txReceipt2.events) {
+      expect(txReceipt2.events.length).to.not.equal(0);
+    }
+  });
 });

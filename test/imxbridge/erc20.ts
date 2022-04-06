@@ -30,7 +30,7 @@ describe("IMXBridge: ERC20", function () {
   it("Should revert withdraw if the contract is not registered", async function () {
     const to = user1.address;
     const tokenAddress = erc20.address;
-    const amount = 100;
+    const amount = "100";
     const nonce = await imxBridge.getNonce(to);
     const signature = await signERC20WithdrawMessage(
       to,
@@ -47,7 +47,7 @@ describe("IMXBridge: ERC20", function () {
 
   it("Should revert withdraw if signature has the wrong to", async function () {
     const to = user1.address;
-    const amount = 100;
+    const amount = "100";
     const nonce = await imxBridge.getNonce(to);
     const signature = await signERC20WithdrawMessage(
       to,
@@ -69,7 +69,7 @@ describe("IMXBridge: ERC20", function () {
 
   it("Should revert withdraw if signature has the wrong tokenAddress", async function () {
     const to = user1.address;
-    const amount = 100;
+    const amount = "100";
     const nonce = await imxBridge.getNonce(to);
     const signature = await signERC20WithdrawMessage(
       to,
@@ -96,7 +96,7 @@ describe("IMXBridge: ERC20", function () {
 
   it("Should revert withdraw if signature has an invalid nonce", async function () {
     const to = user1.address;
-    const amount = 100;
+    const amount = "100";
     const nonce = 400;
     const signature = await signERC20WithdrawMessage(
       to,
@@ -113,7 +113,7 @@ describe("IMXBridge: ERC20", function () {
 
   it("Should revert withdraw if signature has an invalid chainID", async function () {
     const to = user1.address;
-    const amount = 100;
+    const amount = "100";
     const nonce = 400;
     const signature = await signERC20WithdrawMessage(
       to,
@@ -142,7 +142,7 @@ describe("IMXBridge: ERC20", function () {
 
   it("Should be able to withdraw an ERC20 with a valid signature", async function () {
     const to = user1.address;
-    const amount = 100;
+    const amount = "100";
     const nonce = await imxBridge.getNonce(to);
     const signature = await signERC20WithdrawMessage(
       to,
@@ -171,7 +171,7 @@ describe("IMXBridge: ERC20", function () {
 
   it("Should be able to withdraw to antother address with a valid signature", async function () {
     const to = imxBridge.address;
-    const amount = 100;
+    const amount = "100";
     const nonce = await imxBridge.getNonce(to);
     const signature = await signERC20WithdrawMessage(
       to,
@@ -200,7 +200,7 @@ describe("IMXBridge: ERC20", function () {
 
   it("Should be able to withdraw a deposited ERC20 with a valid signature", async function () {
     const to = user1.address;
-    const amount = 100;
+    const amount = "100";
     const nonce = await imxBridge.getNonce(to);
     const signature = await signERC20WithdrawMessage(
       to,
@@ -218,7 +218,7 @@ describe("IMXBridge: ERC20", function () {
     );
     const txReceipt = await tx.wait();
 
-    expect(await erc20.balanceOf(to)).to.equal(amount * 2);
+    expect(await erc20.balanceOf(to)).to.equal(100 * 2);
     expect(await imxBridge.getNonce(to)).to.equal(nonce.toNumber() + 1);
     expect(txReceipt.status).to.equal(1);
 

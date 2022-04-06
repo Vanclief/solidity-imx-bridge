@@ -18,15 +18,17 @@ export async function deployBridge() {
 export async function signERC20WithdrawMessage(
   to: string,
   tokenAddress: string,
-  amount: number,
+  amount: string,
   nonce: number,
   chainID: number
 ) {
   let wallet = new ethers.Wallet(privateKey);
 
+  const amountBig = BigInt(amount);
+
   let messageHash = ethers.utils.solidityKeccak256(
     ["address", "address", "uint", "uint", "uint"],
-    [to, tokenAddress, amount, nonce, chainID]
+    [to, tokenAddress, amountBig, nonce, chainID]
   );
 
   let messageHashBytes = ethers.utils.arrayify(messageHash);

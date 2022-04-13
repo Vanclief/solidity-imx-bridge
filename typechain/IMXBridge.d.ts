@@ -24,6 +24,7 @@ interface IMXBridgeInterface extends ethers.utils.Interface {
   functions: {
     "depositERC20(address,uint256,uint256)": FunctionFragment;
     "depositERC721(address,uint256,uint256)": FunctionFragment;
+    "enable()": FunctionFragment;
     "fee()": FunctionFragment;
     "getFee()": FunctionFragment;
     "getNonce(address)": FunctionFragment;
@@ -54,6 +55,7 @@ interface IMXBridgeInterface extends ethers.utils.Interface {
     functionFragment: "depositERC721",
     values: [string, BigNumberish, BigNumberish]
   ): string;
+  encodeFunctionData(functionFragment: "enable", values?: undefined): string;
   encodeFunctionData(functionFragment: "fee", values?: undefined): string;
   encodeFunctionData(functionFragment: "getFee", values?: undefined): string;
   encodeFunctionData(functionFragment: "getNonce", values: [string]): string;
@@ -125,6 +127,7 @@ interface IMXBridgeInterface extends ethers.utils.Interface {
     functionFragment: "depositERC721",
     data: BytesLike
   ): Result;
+  decodeFunctionResult(functionFragment: "enable", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "fee", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getFee", data: BytesLike): Result;
   decodeFunctionResult(functionFragment: "getNonce", data: BytesLike): Result;
@@ -312,6 +315,10 @@ export class IMXBridge extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<ContractTransaction>;
 
+    enable(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<ContractTransaction>;
+
     fee(overrides?: CallOverrides): Promise<[BigNumber]>;
 
     getFee(overrides?: CallOverrides): Promise<[BigNumber]>;
@@ -412,6 +419,10 @@ export class IMXBridge extends BaseContract {
     overrides?: Overrides & { from?: string | Promise<string> }
   ): Promise<ContractTransaction>;
 
+  enable(
+    overrides?: Overrides & { from?: string | Promise<string> }
+  ): Promise<ContractTransaction>;
+
   fee(overrides?: CallOverrides): Promise<BigNumber>;
 
   getFee(overrides?: CallOverrides): Promise<BigNumber>;
@@ -505,6 +516,8 @@ export class IMXBridge extends BaseContract {
       _destinationChainID: BigNumberish,
       overrides?: CallOverrides
     ): Promise<void>;
+
+    enable(overrides?: CallOverrides): Promise<void>;
 
     fee(overrides?: CallOverrides): Promise<BigNumber>;
 
@@ -747,6 +760,10 @@ export class IMXBridge extends BaseContract {
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<BigNumber>;
 
+    enable(
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<BigNumber>;
+
     fee(overrides?: CallOverrides): Promise<BigNumber>;
 
     getFee(overrides?: CallOverrides): Promise<BigNumber>;
@@ -845,6 +862,10 @@ export class IMXBridge extends BaseContract {
       _tokenAddress: string,
       _id: BigNumberish,
       _destinationChainID: BigNumberish,
+      overrides?: Overrides & { from?: string | Promise<string> }
+    ): Promise<PopulatedTransaction>;
+
+    enable(
       overrides?: Overrides & { from?: string | Promise<string> }
     ): Promise<PopulatedTransaction>;
 

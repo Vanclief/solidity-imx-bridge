@@ -57,6 +57,12 @@ contract IMXBridge is ReentrancyGuard, Ownable, Pausable, IERC721Receiver{
 
     /// @dev Set the fee that is required from the caller to execute a 
     /// withdraw transaction
+    function enable() external onlyOwner {
+        _unpause();
+    }
+
+    /// @dev Set the fee that is required from the caller to execute a 
+    /// withdraw transaction
     function setFee(uint _fee) external onlyOwner {
         fee = _fee;
     }

@@ -20,7 +20,7 @@ describe("IMXBridge: ERC20", function () {
   before(async function () {
     imxBridge = await deployBridge();
     erc20 = await deployBridgeableERC20(imxBridge.address);
-    await imxBridge.registerContract(tokenAddress, erc20.address);
+    await imxBridge.registerContract(tokenAddress, "FCT", erc20.address);
 
     // Create a user
     const [owner, addr1] = await ethers.getSigners();
@@ -81,6 +81,7 @@ describe("IMXBridge: ERC20", function () {
 
     await imxBridge.registerContract(
       "0x456A29a466F861C17094db14501930Ce62ab4f83",
+      "FCT",
       "0x456A29a466F861C17094db14501930Ce62ab4f83"
     );
 

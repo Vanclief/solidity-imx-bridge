@@ -52,6 +52,6 @@ describe("IMXBridge: Admin functions", function () {
     const tokenContract = "0xa4ddc0932b4e97523f8198eda7a28dac2327d365";
     const erc721 = await deployBridgeableERC721(imxBridge.address);
 
-    await imxBridge.registerContract(tokenContract, erc721.address);
+    await imxBridge.registerContract(tokenContract, "CX", erc721.address);
   });
 });

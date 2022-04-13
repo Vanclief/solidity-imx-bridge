@@ -19,8 +19,8 @@ contract IMXBridge is ReentrancyGuard, Ownable, Pausable, IERC721Receiver{
 
     event UpdatedSignerAddress(address indexed previousSigner, address indexed newSigner);
 
-    event ERC20Deposited(address from, uint256 amount, address tokenAddress, uint256 destinationChainID);
-    event ERC721Deposited(address from, uint256 id, address tokenAddress, uint256 destinationChainID);
+    event ERC20Deposited(address from, uint256 amount, address tokenAddress, string tokenSymbol, uint256 destinationChainID);
+    event ERC721Deposited(address from, uint256 id, address tokenAddress, string tokenSymbol, uint256 destinationChainID);
 
     event ERC20Bridged(address to, uint256 amount, address tokenAddress);
     event ERC721Bridged(address to, uint256 id, address tokenAddress);
@@ -30,6 +30,7 @@ contract IMXBridge is ReentrancyGuard, Ownable, Pausable, IERC721Receiver{
 
     mapping (address => uint) public nonces;
     mapping (address => address) public registeredContracts;
+    mapping (address => string) public registeredSymbol;
 
     constructor(address _signerAddress) {
         signerAddress = _signerAddress;
@@ -69,8 +70,9 @@ contract IMXBridge is ReentrancyGuard, Ownable, Pausable, IERC721Receiver{
     /// @dev Registers a contract to on the bridge, the external chain is the
     /// address of the original contract, and the current chain is the
     /// address of the contract on the current chain
-    function registerContract(address _tokenAddress, address _bridgedTokenAddress) public onlyOwner {
+    function registerContract(address _tokenAddress, string calldata _tokenSymbol, address _bridgedTokenAddress) public onlyOwner {
         registeredContracts[_tokenAddress] = _bridgedTokenAddress;
+        registeredSymbol[_tokenAddress] = _tokenSymbol;
     }
 
     /// @dev Returns if the contract is registered
@@ -105,14 +107,16 @@ contract IMXBridge is ReentrancyGuard, Ownable, Pausable, IERC721Receiver{
         require(IERC20(_bridgedTokenAddress).allowance(msg.sender, address(this)) >= _amount, "Insufficient ERC20 allowance");
         IERC20(_bridgedTokenAddress).safeTransferFrom(msg.sender, address(this), _amount);
         IERC20Bridgeable(_bridgedTokenAddress).burn(address(this), _amount);
-        emit ERC20Deposited(msg.sender, _amount, _bridgedTokenAddress, _destinationChainID);
+        string memory _tokenSymbol = registeredSymbol[_tokenAddress];
+        emit ERC20Deposited(msg.sender, _amount, _tokenAddress, _tokenSymbol, _destinationChainID);
     }
 
     /// @dev Deposits an ERC721 token to the bridge contract 
     function depositERC721(address _tokenAddress, uint256 _id, uint256 _destinationChainID) external checkRegistered(_tokenAddress) nonReentrant whenNotPaused {
         address _bridgedTokenAddress = registeredContracts[_tokenAddress];
         IERC721(_bridgedTokenAddress).safeTransferFrom(msg.sender, address(this), _id);
-        emit ERC721Deposited(msg.sender, _id, _bridgedTokenAddress, _destinationChainID);
+        string memory _tokenSymbol = registeredSymbol[_tokenAddress];
+        emit ERC721Deposited(msg.sender, _id, _tokenAddress, _tokenSymbol, _destinationChainID);
     }
 
     function onERC721Received(address, address, uint256, bytes memory) public pure override returns(bytes4) {

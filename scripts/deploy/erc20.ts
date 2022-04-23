@@ -13,7 +13,7 @@ async function main() {
   // We get the contract to deploy
   const tokenName = "Faucet Token";
   const tokenSymbol = "FCT";
-  const bridgeAddress = "0xD1Aa888D5aE903F699f4067D6C4195Ea2B7d1a70";
+  const bridgeAddress = "0xE70e740104a08fB2A6519c3b95Eed65856C9B05c";
 
   const BridgeableERC20 = await ethers.getContractFactory("BridgeableERC20");
   const contract = await BridgeableERC20.deploy(

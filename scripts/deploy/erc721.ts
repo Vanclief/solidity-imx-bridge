@@ -1,7 +1,7 @@
 /** @format */
 
 import { ethers, hardhatArguments, run } from "hardhat";
-import { getSignerAddress } from "./utils";
+import { getBridgeAddress } from "./utils";
 
 function sleep(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms));
@@ -11,7 +11,7 @@ async function main() {
   const [deployer] = await ethers.getSigners();
 
   console.log("====================================");
-  console.log("DEPLOYING BRIDGE");
+  console.log("DEPLOYING BRIDGEABLE ERC721");
   console.log("Network:", hardhatArguments.network);
   console.log("Account:", deployer.address);
   console.log("Balance:", (await deployer.getBalance()).toString());
@@ -29,9 +29,16 @@ async function deploy(network: string) {
   // line interface.
 
   // We get the contract to deploy
-  const IMXBridge = await ethers.getContractFactory("IMXBridge");
-  const signerAddress = getSignerAddress(network);
-  const contract = await IMXBridge.deploy(signerAddress);
+  const tokenName = "CryptoXolos";
+  const tokenSymbol = "CX";
+  const bridgeAddress = getBridgeAddress(network);
+
+  const BridgeableERC721 = await ethers.getContractFactory("BridgeableERC721");
+  const contract = await BridgeableERC721.deploy(
+    tokenName,
+    tokenSymbol,
+    bridgeAddress
+  );
 
   await contract.deployed();
 
@@ -41,7 +48,7 @@ async function deploy(network: string) {
   await sleep(60000 * 3);
   await run("verify:verify", {
     address: contract.address,
-    constructorArguments: [signerAddress],
+    constructorArguments: [tokenName, tokenSymbol, bridgeAddress],
   });
 }
 
